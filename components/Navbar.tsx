@@ -10,7 +10,7 @@ const links = [
   ["Milestones", "milestones"],
   ["Gallery", "gallery"],
   ["Memories", "memories"],
-  ["Comments", "comments"],
+  ["Contact", "contact"],
 ];
 
 export function Navbar() {
