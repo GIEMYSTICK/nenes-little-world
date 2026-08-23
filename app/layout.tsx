@@ -31,9 +31,9 @@ export const metadata: Metadata = {
   },
   twitter: { card: "summary_large_image", title: "Nene's Little World", description: "ยินดีต้อนรับสู่โลกใบเล็ก ๆ ของเนเน่", images: ["/images/nene-card.png"] },
   icons: {
-    icon: [{ url: "/fva.png", type: "image/png" }],
-    shortcut: "/fva.png",
-    apple: "/fva.png",
+    icon: [{ url: "/icon.png", type: "image/png", sizes: "512x512" }],
+    shortcut: "/icon.png",
+    apple: [{ url: "/apple-icon.png", sizes: "180x180", type: "image/png" }],
   },
 };
 
