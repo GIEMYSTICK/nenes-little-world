@@ -28,7 +28,7 @@ export function Navbar() {
     <header className={`navbar ${scrolled || open ? "navbar--scrolled" : ""}`}>
       <a className="brand" href="#home" aria-label="กลับไปหน้าแรก">
         <span className="brand-logo">
-          <Image src="/nene_site_logo.png" alt="โลโก้ Nene's Little World" fill sizes="48px" priority />
+          <Image src="/nene-logo-v2.png" alt="โลโก้ Nene's Little World" fill sizes="48px" priority />
         </span>
         <span>Nene&apos;s <i>little world</i></span>
       </a>

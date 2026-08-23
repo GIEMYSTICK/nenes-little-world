@@ -7,7 +7,7 @@ export function Footer() {
       <div className="footer-inner">
         <div className="footer-brand">
           <div className="footer-logo">
-            <Image src="/nene_site_logo.png" alt="โลโก้ Nene's Little World" fill sizes="110px" />
+            <Image src="/nene-logo-v2.png" alt="โลโก้ Nene's Little World" fill sizes="110px" />
           </div>
           <div>
             <h2>Nene&apos;s Little World</h2>
