@@ -3,35 +3,25 @@
 import { FormEvent, useState } from "react";
 import { Heart, Mail, Send } from "lucide-react";
 
-type FormState = "idle" | "sending" | "success" | "error";
+type FormState = "idle" | "success";
 
 export function ContactForm() {
   const [state, setState] = useState<FormState>("idle");
   const [message, setMessage] = useState("");
 
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = event.currentTarget;
-    setState("sending");
-    setMessage("");
+    const data = new FormData(form);
+    const name = String(data.get("name") || "");
+    const email = String(data.get("email") || "");
+    const subject = String(data.get("subject") || "ข้อความถึงเนเน่");
+    const body = String(data.get("message") || "");
+    const mailBody = `ชื่อ: ${name}\nอีเมลสำหรับติดต่อกลับ: ${email}\n\n${body}`;
 
-    try {
-      const response = await fetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(Object.fromEntries(new FormData(form))),
-      });
-      const result = await response.json() as { message?: string };
-
-      if (!response.ok) throw new Error(result.message || "ส่งข้อความไม่สำเร็จ");
-
-      form.reset();
-      setState("success");
-      setMessage("ส่งข้อความถึงเนเน่เรียบร้อยแล้ว ขอบคุณที่แวะมาทักทายกันนะคะ ♡");
-    } catch (error) {
-      setState("error");
-      setMessage(error instanceof Error ? error.message : "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง");
-    }
+    window.location.href = `mailto:nene.yanitah2026@gmail.com?subject=${encodeURIComponent(`[เว็บไซต์เนเน่] ${subject}`)}&body=${encodeURIComponent(mailBody)}`;
+    setState("success");
+    setMessage("เปิดแอปอีเมลให้แล้ว กรุณาตรวจข้อความและกดส่งอีกครั้งนะคะ ♡");
   }
 
   return (
@@ -46,7 +36,7 @@ export function ContactForm() {
       <div className="comments-card contact-card">
         <div className="comments-card-head">
           <div className="comments-icon"><Mail size={22} /></div>
-          <div><b>ฝากข้อความถึงเนเน่</b><span>เราจะส่งอีเมลขอบคุณกลับไปหาคุณอัตโนมัติ</span></div>
+          <div><b>ฝากข้อความถึงเนเน่</b><span>ระบบจะเตรียมอีเมลถึงครอบครัวของเนเน่ให้คุณ</span></div>
         </div>
 
         <form className="contact-form" onSubmit={handleSubmit}>
@@ -58,8 +48,8 @@ export function ContactForm() {
           <label>ข้อความ<textarea name="message" rows={6} minLength={5} maxLength={3000} required placeholder="เขียนข้อความน่ารัก ๆ ถึงเนเน่ตรงนี้ได้เลย..." /></label>
           <label className="contact-honeypot" aria-hidden="true">เว็บไซต์<input name="website" type="text" tabIndex={-1} autoComplete="off" /></label>
           <label className="contact-consent"><input type="checkbox" required /> <span>ฉันยินยอมให้เว็บไซต์ใช้ข้อมูลนี้เพื่อติดต่อกลับเกี่ยวกับข้อความนี้</span></label>
-          <button className="contact-submit" type="submit" disabled={state === "sending"}>
-            {state === "sending" ? "กำลังส่งข้อความ..." : <><Send size={17} /> ส่งข้อความหาเนเน่</>}
+          <button className="contact-submit" type="submit">
+            <Send size={17} /> เปิดอีเมลเพื่อส่งหาเนเน่
           </button>
           <div className={`contact-result ${state}`} role="status" aria-live="polite">{message}</div>
         </form>
