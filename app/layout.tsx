@@ -23,6 +23,7 @@ export const metadata: Metadata = {
   title: "Nene's Little World | บันทึกความทรงจำของเนเน่",
   description: "เรื่องราวเล็ก ๆ ของเด็กผู้หญิงตัวน้อย ที่ทำให้โลกของเราสดใสขึ้นทุกวัน",
   keywords: ["Nene", "เนเน่", "Baby Memory", "Baby Diary", "Family Memories"],
+  alternates: { canonical: "/", languages: { "th-TH": "/", en: "/en" } },
   openGraph: {
     title: "Nene's Little World",
     description: "ยินดีต้อนรับสู่โลกใบเล็ก ๆ ของเนเน่",
