@@ -1,4 +1,53 @@
-import type { Metadata } from 'next';
-import './globals.css';
-export const metadata: Metadata = { title: "Nene's Little World", description: 'บันทึกความทรงจำของเนเน่' };
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) { return <html lang="th"><body>{children}</body></html>; }
+import type { Metadata, Viewport } from "next";
+import { Mali, Noto_Sans_Thai } from "next/font/google";
+import "./globals.css";
+
+const noto = Noto_Sans_Thai({
+  variable: "--font-noto-thai",
+  subsets: ["thai", "latin"],
+  display: "swap",
+});
+
+const mali = Mali({
+  variable: "--font-mali",
+  subsets: ["thai", "latin"],
+  weight: ["400", "500", "600", "700"],
+  display: "swap",
+});
+
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL
+  ?? (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000");
+
+export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
+  title: "Nene's Little World | บันทึกความทรงจำของเนเน่",
+  description: "เรื่องราวเล็ก ๆ ของเด็กผู้หญิงตัวน้อย ที่ทำให้โลกของเราสดใสขึ้นทุกวัน",
+  keywords: ["Nene", "เนเน่", "Baby Memory", "Baby Diary", "Family Memories"],
+  openGraph: {
+    title: "Nene's Little World",
+    description: "ยินดีต้อนรับสู่โลกใบเล็ก ๆ ของเนเน่",
+    images: [{ url: "/images/nene-card.png", width: 1122, height: 1402, alt: "Nene's Little World" }],
+    type: "website",
+  },
+  twitter: { card: "summary_large_image", title: "Nene's Little World", description: "ยินดีต้อนรับสู่โลกใบเล็ก ๆ ของเนเน่", images: ["/images/nene-card.png"] },
+  icons: {
+    icon: [{ url: "/fva.png", type: "image/png" }],
+    shortcut: "/fva.png",
+    apple: "/fva.png",
+  },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+  themeColor: "#f8fbff",
+};
+
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  return (
+    <html lang="th">
+      <body className={`${noto.variable} ${mali.variable}`}>{children}</body>
+    </html>
+  );
+}
