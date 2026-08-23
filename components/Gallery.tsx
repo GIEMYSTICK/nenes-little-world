@@ -5,7 +5,9 @@ import { useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { photos } from "@/data/nene";
 
-export function Gallery() {
+const englishCaptions = ["A tiny wink", "One month of love", "Today’s little smile", "My favourite blue hat", "Warm and cosy", "Wide awake", "Sweet dreams", "A delicious little meal", "Ready for an adventure", "Nene’s Sunday", "Hooray, my little world!"];
+
+export function Gallery({ locale = "th" }: { locale?: "th" | "en" }) {
   const [active, setActive] = useState<number | null>(null);
 
   useEffect(() => {
@@ -35,21 +37,21 @@ export function Gallery() {
             type="button"
             key={photo.src}
             onClick={() => setActive(index)}
-            aria-label={`เปิดภาพ: ${photo.caption}`}
+            aria-label={locale === "en" ? `Open photo: ${englishCaptions[index]}` : `เปิดภาพ: ${photo.caption}`}
           >
             <Image src={photo.src} alt={photo.alt} fill sizes="(max-width: 640px) 50vw, (max-width: 1000px) 33vw, 25vw" />
-            <span>{photo.caption}</span>
+            <span>{locale === "en" ? englishCaptions[index] : photo.caption}</span>
           </button>
         ))}
       </div>
 
       {active !== null && (
-        <div className="lightbox" role="dialog" aria-modal="true" aria-label="ดูรูปภาพขนาดใหญ่">
+        <div className="lightbox" role="dialog" aria-modal="true" aria-label={locale === "en" ? "Large photo viewer" : "ดูรูปภาพขนาดใหญ่"}>
           <button className="lightbox-close" type="button" aria-label="ปิดรูปภาพ" onClick={() => setActive(null)}><X /></button>
           <button className="lightbox-arrow lightbox-arrow--left" type="button" aria-label="รูปก่อนหน้า" onClick={(event) => { event.stopPropagation(); previous(); }}><ChevronLeft /></button>
           <div className="lightbox-content">
             <Image src={photos[active].src} alt={photos[active].alt} fill sizes="95vw" priority />
-            <p>{photos[active].caption} <span>{active + 1} / {photos.length}</span></p>
+            <p>{locale === "en" ? englishCaptions[active] : photos[active].caption} <span>{active + 1} / {photos.length}</span></p>
           </div>
           <button className="lightbox-arrow lightbox-arrow--right" type="button" aria-label="รูปถัดไป" onClick={(event) => { event.stopPropagation(); next(); }}><ChevronRight /></button>
         </div>

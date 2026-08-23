@@ -1,7 +1,8 @@
 import Image from "next/image";
 import { ExternalLink, Mail, MapPin, MessageCircle, Phone } from "lucide-react";
 
-export function Footer() {
+export function Footer({ locale = "th" }: { locale?: "th" | "en" }) {
+  const en = locale === "en";
   return (
     <footer>
       <div className="footer-inner">
@@ -11,16 +12,16 @@ export function Footer() {
           </div>
           <div>
             <h2>Nene&apos;s Little World</h2>
-            <p>พื้นที่เล็ก ๆ ที่เก็บทุกความทรงจำอันแสนอบอุ่นของเนเน่</p>
+            <p>{en ? "A little place where Nene’s warmest memories live forever." : "พื้นที่เล็ก ๆ ที่เก็บทุกความทรงจำอันแสนอบอุ่นของเนเน่"}</p>
           </div>
         </div>
 
         <div className="footer-contact" aria-labelledby="contact-title">
-          <p className="footer-label" id="contact-title">ช่องทางติดต่อ</p>
+          <p className="footer-label" id="contact-title">{en ? "Contact" : "ช่องทางติดต่อ"}</p>
           <address>
             <div className="contact-item">
               <MapPin aria-hidden="true" />
-              <span>ท่าเสา, อุตรดิตถ์, ประเทศไทย 53000</span>
+              <span>{en ? "Tha Sao, Uttaradit, Thailand 53000" : "ท่าเสา, อุตรดิตถ์, ประเทศไทย 53000"}</span>
             </div>
             <a className="contact-item" href="tel:+66903268641">
               <Phone aria-hidden="true" />
@@ -32,7 +33,7 @@ export function Footer() {
             </a>
             <a className="contact-item" href="https://www.facebook.com/nene.tuajiew/" target="_blank" rel="noreferrer">
               <MessageCircle aria-hidden="true" />
-              <span>Facebook: เนเน่ ตัวจิ๋ว</span>
+              <span>Facebook: {en ? "Nene Tuajiew" : "เนเน่ ตัวจิ๋ว"}</span>
               <ExternalLink className="contact-external" aria-hidden="true" />
             </a>
           </address>
@@ -40,7 +41,7 @@ export function Footer() {
       </div>
 
       <div className="footer-bottom">
-        <div className="footer-legal"><a href="/privacy">นโยบายความเป็นส่วนตัว</a><a href="/data-deletion">การลบข้อมูล</a></div>
+        <div className="footer-legal"><a href="/privacy">{en ? "Privacy Policy" : "นโยบายความเป็นส่วนตัว"}</a><a href="/data-deletion">{en ? "Data Deletion" : "การลบข้อมูล"}</a></div>
         <p>Made with love ♡</p>
         <small>© 2026 Nene</small>
       </div>

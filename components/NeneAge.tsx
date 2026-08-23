@@ -89,6 +89,18 @@ export function NeneAgeThai() {
   return <span aria-live="polite">{parts.join(" ")}</span>;
 }
 
+export function NeneAgeEnglish() {
+  const age = useNeneAge();
+  if (!age) return <span className="age-loading">Calculating...</span>;
+  if (!age.isBorn) return <span>Waiting to meet you</span>;
+  const parts = [
+    age.years > 0 ? `${age.years} ${age.years === 1 ? "year" : "years"}` : "",
+    age.months > 0 ? `${age.months} ${age.months === 1 ? "month" : "months"}` : "",
+    `${age.days} ${age.days === 1 ? "day" : "days"}`,
+  ].filter(Boolean);
+  return <span aria-live="polite">{parts.join(" ")}</span>;
+}
+
 export function NeneAgeBadge() {
   const age = useNeneAge();
   if (!age) return <><b className="age-loading">—</b><span>growing<br />with love</span></>;
@@ -114,12 +126,12 @@ export function NeneAgeHeadline() {
   return <span aria-live="polite">{parts.join(" ")}</span>;
 }
 
-export function NeneAgeStats() {
+export function NeneAgeStats({ locale = "th" }: { locale?: "th" | "en" }) {
   const age = useNeneAge();
   const values = age ?? { years: 0, months: 0, days: 0 };
 
   return (
-    <div className="anniversary-stats" aria-label="อายุปัจจุบันของเนเน่">
+    <div className="anniversary-stats" aria-label={locale === "en" ? "Nene's current age" : "อายุปัจจุบันของเนเน่"}>
       <div><b>{age ? values.years : "—"}</b><span>Years</span></div>
       <div><b>{age ? values.months : "—"}</b><span>Months</span></div>
       <div><b>{age ? values.days : "—"}</b><span>Days</span></div>
