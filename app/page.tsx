@@ -7,7 +7,7 @@ import { Gallery } from "@/components/Gallery";
 import { Footer } from "@/components/Footer";
 import { MotionController } from "@/components/MotionController";
 import { NeneAgeHeadline, NeneAgeStats, NeneAgeThai, NeneTotalDays } from "@/components/NeneAge";
-import { FacebookComments } from "@/components/FacebookComments";
+import { ContactForm } from "@/components/ContactForm";
 import { baby, memories, milestones, videos } from "@/data/nene";
 
 export default function Home() {
@@ -117,7 +117,7 @@ export default function Home() {
         </article>
       </section>
 
-      <FacebookComments />
+      <ContactForm />
       <Footer />
     </main>
   );

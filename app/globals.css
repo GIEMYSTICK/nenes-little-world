@@ -233,15 +233,23 @@ img { user-select: none; }
 .comments-card-head b { font-family: var(--font-mali); font-size: 17px; }
 .comments-card-head span { color: var(--muted); font-size: 11px; }
 .comments-icon { width: 44px; height: 44px; border-radius: 15px; background: #eaf5fc; color: #5d9bc1; display: grid; place-items: center; }
-.comments-setup { margin-top: 22px; padding: 24px; border: 1px dashed #bbd8e9; border-radius: 20px; background: #f4faff; }
-.comments-setup > b { font-family: var(--font-mali); font-size: 17px; }
-.comments-setup p { margin: 9px 0 17px; color: var(--muted); font-size: 13px; line-height: 1.75; }
-.comments-setup code { padding: 2px 6px; border-radius: 6px; background: #e5f1f8; color: #386e90; font-size: 11px; overflow-wrap: anywhere; }
-.comments-setup a { width: fit-content; min-height: 42px; padding: 0 15px; border-radius: 999px; background: #1877f2; color: white; display: flex; align-items: center; font-size: 12px; font-weight: 700; }
-.facebook-comments-box { position: relative; min-height: 280px; padding-top: 20px; overflow: hidden; }
-.facebook-comments-box > span, .facebook-comments-box iframe { width: 100% !important; }
-.comments-loading { margin: 80px 0 0; color: var(--muted); text-align: center; font-size: 13px; }
-.facebook-comments-box.is-ready .comments-loading { display: none; }
+.contact-form { display: grid; gap: 17px; padding-top: 23px; }
+.contact-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+.contact-form label { display: grid; gap: 8px; color: var(--ink); font-size: 12px; font-weight: 700; }
+.contact-form input, .contact-form textarea { width: 100%; border: 1px solid #d9e5ee; border-radius: 15px; background: #f9fcfe; color: var(--ink); font: inherit; font-size: 14px; outline: none; transition: border-color .2s ease, box-shadow .2s ease, background .2s ease; }
+.contact-form input { min-height: 48px; padding: 0 15px; }
+.contact-form textarea { min-height: 145px; padding: 14px 15px; line-height: 1.7; resize: vertical; }
+.contact-form input:focus, .contact-form textarea:focus { border-color: #7db7d8; background: white; box-shadow: 0 0 0 4px rgba(125,183,216,.14); }
+.contact-form input::placeholder, .contact-form textarea::placeholder { color: #9aa9b8; }
+.contact-consent { grid-template-columns: 18px 1fr !important; align-items: start; gap: 9px !important; color: var(--muted) !important; font-weight: 500 !important; line-height: 1.55; }
+.contact-consent input { width: 17px; min-height: 17px; margin-top: 2px; accent-color: #5d9bc1; }
+.contact-honeypot { position: absolute !important; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+.contact-submit { width: fit-content; min-height: 48px; padding: 0 20px; border: 0; border-radius: 999px; background: var(--ink); color: white; display: inline-flex; align-items: center; justify-content: center; gap: 9px; font: inherit; font-size: 13px; font-weight: 700; cursor: pointer; box-shadow: 0 12px 25px rgba(33,57,93,.16); transition: transform .2s ease, opacity .2s ease; }
+.contact-submit:hover { transform: translateY(-2px); }
+.contact-submit:disabled { opacity: .6; cursor: wait; transform: none; }
+.contact-result { min-height: 20px; font-size: 13px; line-height: 1.6; }
+.contact-result.success { color: #36785c; }
+.contact-result.error { color: #b34c5a; }
 
 footer { position: relative; min-height: 420px; padding: 80px max(20px, calc((100% - 1180px)/2)) 32px; background: var(--ink); color: white; overflow: hidden; }
 footer::before { content: ""; position: absolute; width: 260px; height: 260px; border-radius: 50%; background: rgba(185,223,246,.08); left: -80px; top: -80px; }
@@ -400,7 +408,8 @@ a.contact-item:hover { background: rgba(255,255,255,.09); border-color: rgba(185
   .comments-card { min-height: 330px; padding: 16px; border-radius: 22px; }
   .comments-intro h2 { font-size: 36px; }
   .comments-login-note { border-radius: 16px; }
-  .comments-setup { padding: 19px; }
+  .contact-form-row { grid-template-columns: 1fr; }
+  .contact-submit { width: 100%; }
   footer { padding: 64px 18px calc(32px + env(safe-area-inset-bottom)); }
   .footer-inner { grid-template-columns: 1fr; gap: 44px; }
   .footer-brand { align-items: flex-start; gap: 16px; }
