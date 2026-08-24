@@ -20,7 +20,7 @@ export function ContactForm({ locale = "th" }: { locale?: "th" | "en" }) {
     const body = String(data.get("message") || "");
     setState("sending"); setMessage("");
     try {
-      const response = await fetch("/api/contact", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name, email, subject, message: body, website: data.get("website") }) });
+      const response = await fetch("/api/contact", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name, email, subject, message: body, website: data.get("website"), locale }) });
       const result = await response.json();
       if (!response.ok) throw new Error(result.message);
       form.reset(); setState("success");

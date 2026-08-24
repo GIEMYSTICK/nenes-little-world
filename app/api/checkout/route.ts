@@ -22,14 +22,16 @@ export async function POST(request: Request) {
     if (product.stock_quantity < quantity) return NextResponse.json({ message: "สินค้าเหลือไม่เพียงพอ" }, { status: 409 });
 
     const stripe = new Stripe(secret);
-    const configuredUrl = process.env.NEXT_PUBLIC_SITE_URL;
-    const origin = configuredUrl || new URL(request.url).origin;
+    // Return to the same host that started Checkout. This keeps Preview and
+    // custom-domain deployments isolated from one another.
+    const origin = new URL(request.url).origin;
     const name = locale === "en" ? product.name_en : product.name_th;
     const description = locale === "en" ? product.description_en : product.description_th;
     const images = [...(product.product_images ?? [])].sort((a, b) => a.sort_order - b.sort_order).map((image) => image.url).filter((url) => /^https:\/\//.test(url)).slice(0, 1);
 
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
+      payment_method_types: ["card"],
       locale: locale === "th" ? "th" : "en",
       customer_creation: "always",
       phone_number_collection: { enabled: true },

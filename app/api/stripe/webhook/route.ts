@@ -20,17 +20,20 @@ export async function POST(request: Request) {
 
   if (event.type === "checkout.session.completed") {
     const session = event.data.object;
+    if (session.payment_status !== "paid") return new Response("Payment not completed", { status: 200 });
     const supabase = createServiceSupabase();
     if (!supabase) return new Response("Database not configured", { status: 503 });
 
     const productId = session.metadata?.product_id;
     const quantity = Number(session.metadata?.quantity || 1);
-    if (!productId) return new Response("Missing product metadata", { status: 400 });
+    if (!productId || !Number.isInteger(quantity) || quantity < 1 || quantity > 5) return new Response("Invalid product metadata", { status: 400 });
 
     const { data: existing } = await supabase.from("orders").select("id").eq("stripe_checkout_session_id", session.id).maybeSingle();
     if (!existing) {
       const { data: product } = await supabase.from("products").select("id,name_th,sku,price,stock_quantity").eq("id", productId).single();
       if (!product) return new Response("Product not found", { status: 404 });
+      const currentStock = Number(product.stock_quantity);
+      if (!Number.isFinite(currentStock) || currentStock < quantity) return new Response("Insufficient stock", { status: 409 });
       const amount = Number(session.amount_total || 0) / 100;
       const details = session.customer_details;
       const { data: order, error } = await supabase.from("orders").insert({
@@ -48,9 +51,25 @@ export async function POST(request: Request) {
       }).select("id").single();
       if (error || !order) return new Response("Order insert failed", { status: 500 });
 
-      await supabase.from("order_items").insert({ order_id: order.id, product_id: product.id, product_name: product.name_th, product_sku: product.sku, unit_price: Number(product.price), quantity });
-      const remaining = Math.max(0, Number(product.stock_quantity) - quantity);
-      await supabase.from("products").update({ stock_quantity: remaining, status: remaining === 0 ? "sold" : "active" }).eq("id", product.id);
+      const unitPrice = quantity > 0 ? amount / quantity : Number(product.price);
+      const { error: itemError } = await supabase.from("order_items").insert({ order_id: order.id, product_id: product.id, product_name: product.name_th, product_sku: product.sku, unit_price: unitPrice, quantity });
+      if (itemError) {
+        await supabase.from("orders").delete().eq("id", order.id);
+        return new Response("Order item insert failed", { status: 500 });
+      }
+      const remaining = currentStock - quantity;
+      const { data: updatedProduct, error: stockError } = await supabase
+        .from("products")
+        .update({ stock_quantity: remaining, status: remaining === 0 ? "sold" : "active" })
+        .eq("id", product.id)
+        .eq("stock_quantity", currentStock)
+        .select("id")
+        .maybeSingle();
+      if (stockError || !updatedProduct) {
+        await supabase.from("order_items").delete().eq("order_id", order.id);
+        await supabase.from("orders").delete().eq("id", order.id);
+        return new Response(stockError ? "Stock update failed" : "Stock changed during checkout", { status: stockError ? 500 : 409 });
+      }
     }
   }
 

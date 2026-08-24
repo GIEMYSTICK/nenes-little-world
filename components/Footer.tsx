@@ -44,7 +44,7 @@ export function Footer({ locale = "th" }: { locale?: "th" | "en" }) {
       <div className="footer-counter-wrap"><VisitorCounter locale={locale} /></div>
 
       <div className="footer-bottom">
-        <div className="footer-legal"><a href="/privacy">{en ? "Privacy Policy" : "นโยบายความเป็นส่วนตัว"}</a><a href="/data-deletion">{en ? "Data Deletion" : "การลบข้อมูล"}</a></div>
+        <div className="footer-legal"><a href={en ? "/en/privacy" : "/privacy"}>{en ? "Privacy Policy" : "นโยบายความเป็นส่วนตัว"}</a><a href={en ? "/en/data-deletion" : "/data-deletion"}>{en ? "Data Deletion" : "การลบข้อมูล"}</a></div>
         <p>Made with love ♡</p>
         <small>© 2026 Nene</small>
       </div>

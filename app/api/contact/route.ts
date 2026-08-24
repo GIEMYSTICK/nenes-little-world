@@ -20,12 +20,13 @@ function isRateLimited(ip: string) {
 
 export async function POST(request: NextRequest) {
   const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
-  if (isRateLimited(ip)) {
-    return NextResponse.json({ message: "ส่งข้อความบ่อยเกินไป กรุณารอสักครู่แล้วลองใหม่" }, { status: 429 });
-  }
 
   try {
     const body = await request.json();
+    const en = body.locale === "en";
+    if (isRateLimited(ip)) {
+      return NextResponse.json({ message: en ? "Too many messages. Please wait a moment and try again." : "ส่งข้อความบ่อยเกินไป กรุณารอสักครู่แล้วลองใหม่" }, { status: 429 });
+    }
     const name = clean(body.name, 80);
     const email = clean(body.email, 160).toLowerCase();
     const subject = clean(body.subject, 120);
@@ -34,13 +35,13 @@ export async function POST(request: NextRequest) {
 
     if (website) return NextResponse.json({ ok: true });
     if (!name || !emailPattern.test(email) || !subject || message.length < 5) {
-      return NextResponse.json({ message: "กรุณากรอกชื่อ อีเมล หัวข้อ และข้อความให้ครบถ้วน" }, { status: 400 });
+      return NextResponse.json({ message: en ? "Please complete your name, email, subject, and message." : "กรุณากรอกชื่อ อีเมล หัวข้อ และข้อความให้ครบถ้วน" }, { status: 400 });
     }
 
     const mail = createMailTransport();
     const recipient = process.env.CONTACT_TO_EMAIL || SITE_CONTACT_EMAIL;
     if (!mail) {
-      return NextResponse.json({ message: "ระบบอีเมลยังไม่พร้อมใช้งาน กรุณาติดต่อผ่านอีเมลในส่วนท้ายเว็บไซต์" }, { status: 503 });
+      return NextResponse.json({ message: en ? "Email is temporarily unavailable. Please use the address in the website footer." : "ระบบอีเมลยังไม่พร้อมใช้งาน กรุณาติดต่อผ่านอีเมลในส่วนท้ายเว็บไซต์" }, { status: 503 });
     }
 
     const safeName = escapeHtml(name);
@@ -60,14 +61,18 @@ export async function POST(request: NextRequest) {
     await mail.transporter.sendMail({
       from: `"${brand}" <${mail.user}>`,
       to: email,
-      subject: "ขอบคุณที่ส่งข้อความถึงเนเน่ ♡",
-      text: `สวัสดีคุณ ${name}\n\nเราได้รับข้อความ “${subject}” เรียบร้อยแล้ว ขอบคุณที่แวะมาฝากความรักและความทรงจำดี ๆ ให้เนเน่นะคะ\n\nด้วยรัก\nครอบครัวของเนเน่`,
-      html: `<div style="font-family:Arial,'Noto Sans Thai',sans-serif;max-width:640px;margin:auto;color:#21395d"><div style="padding:34px;text-align:center;background:linear-gradient(135deg,#e9f7ff,#fff2f4);border-radius:26px"><div style="font-size:38px">♡</div><h1 style="margin:8px 0 4px;font-size:27px">ขอบคุณที่ส่งข้อความถึงเนเน่</h1><p style="margin:0;color:#6d8097">Nene's Little World</p></div><div style="padding:30px;line-height:1.9"><p>สวัสดีคุณ ${safeName}</p><p>เราได้รับข้อความเรื่อง <b>“${safeSubject}”</b> เรียบร้อยแล้ว ขอบคุณที่แวะมาฝากความรัก คำอวยพร และความทรงจำดี ๆ ให้เนเน่นะคะ</p><p>ข้อความของคุณมีความหมายกับครอบครัวของเรามาก ♡</p><p style="margin-top:28px"><b>ด้วยรัก</b><br />ครอบครัวของเนเน่</p></div><div style="padding:18px;text-align:center;background:#f7fafc;color:#8291a2;font-size:12px;border-radius:0 0 22px 22px">อีเมลตอบกลับอัตโนมัติจากเว็บไซต์ Nene's Little World</div></div>`,
+      subject: en ? "Thank you for your message to Nene ♡" : "ขอบคุณที่ส่งข้อความถึงเนเน่ ♡",
+      text: en
+        ? `Hello ${name},\n\nWe received your message “${subject}”. Thank you for sharing a little love and a lovely memory with Nene.\n\nWith love,\nNene's family`
+        : `สวัสดีคุณ ${name}\n\nเราได้รับข้อความ “${subject}” เรียบร้อยแล้ว ขอบคุณที่แวะมาฝากความรักและความทรงจำดี ๆ ให้เนเน่นะคะ\n\nด้วยรัก\nครอบครัวของเนเน่`,
+      html: en
+        ? `<div style="font-family:Arial,sans-serif;max-width:640px;margin:auto;color:#21395d"><div style="padding:34px;text-align:center;background:linear-gradient(135deg,#e9f7ff,#fff2f4);border-radius:26px"><div style="font-size:38px">♡</div><h1 style="margin:8px 0 4px;font-size:27px">Thank you for your message to Nene</h1><p style="margin:0;color:#6d8097">Nene's Little World</p></div><div style="padding:30px;line-height:1.9"><p>Hello ${safeName},</p><p>We received your message about <b>“${safeSubject}”</b>. Thank you for sharing your kind words and a little love with Nene.</p><p>Your message means so much to our family ♡</p><p style="margin-top:28px"><b>With love,</b><br />Nene's family</p></div><div style="padding:18px;text-align:center;background:#f7fafc;color:#8291a2;font-size:12px;border-radius:0 0 22px 22px">Automatic reply from Nene's Little World</div></div>`
+        : `<div style="font-family:Arial,'Noto Sans Thai',sans-serif;max-width:640px;margin:auto;color:#21395d"><div style="padding:34px;text-align:center;background:linear-gradient(135deg,#e9f7ff,#fff2f4);border-radius:26px"><div style="font-size:38px">♡</div><h1 style="margin:8px 0 4px;font-size:27px">ขอบคุณที่ส่งข้อความถึงเนเน่</h1><p style="margin:0;color:#6d8097">Nene's Little World</p></div><div style="padding:30px;line-height:1.9"><p>สวัสดีคุณ ${safeName}</p><p>เราได้รับข้อความเรื่อง <b>“${safeSubject}”</b> เรียบร้อยแล้ว ขอบคุณที่แวะมาฝากความรัก คำอวยพร และความทรงจำดี ๆ ให้เนเน่นะคะ</p><p>ข้อความของคุณมีความหมายกับครอบครัวของเรามาก ♡</p><p style="margin-top:28px"><b>ด้วยรัก</b><br />ครอบครัวของเนเน่</p></div><div style="padding:18px;text-align:center;background:#f7fafc;color:#8291a2;font-size:12px;border-radius:0 0 22px 22px">อีเมลตอบกลับอัตโนมัติจากเว็บไซต์ Nene's Little World</div></div>`,
     });
 
     return NextResponse.json({ ok: true });
   } catch (error) {
     console.error("Contact form email error", error instanceof Error ? error.message : error);
-    return NextResponse.json({ message: "ไม่สามารถส่งข้อความได้ในขณะนี้ กรุณาลองใหม่อีกครั้ง" }, { status: 500 });
+    return NextResponse.json({ message: "ไม่สามารถส่งข้อความได้ในขณะนี้ กรุณาลองใหม่อีกครั้ง / Unable to send your message right now." }, { status: 500 });
   }
 }

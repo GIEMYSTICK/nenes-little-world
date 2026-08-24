@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Mali, Noto_Sans_Thai } from "next/font/google";
 import "./globals.css";
 import { MobileNavigation } from "@/components/MobileNavigation";
+import { getSiteUrl } from "@/lib/site-url";
 
 const noto = Noto_Sans_Thai({
   variable: "--font-noto-thai",
@@ -16,8 +17,7 @@ const mali = Mali({
   display: "swap",
 });
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL
-  || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000");
+const siteUrl = getSiteUrl();
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
