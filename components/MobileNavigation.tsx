@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ArrowUp, Heart, Home, Mail, ShoppingBag } from "lucide-react";
 import { useEffect, useState } from "react";
+import styles from "./MobileNavigation.module.css";
 
 export function MobileNavigation() {
   const pathname = usePathname();
@@ -28,10 +29,10 @@ export function MobileNavigation() {
   ];
 
   return <>
-    <div className="mobile-bottom-spacer" aria-hidden="true" />
-    <nav className="mobile-bottom-nav" aria-label={en ? "Mobile navigation" : "เมนูด้านล่างสำหรับมือถือ"}>
-      {links.map(({ href, label, icon: Icon, active }) => <Link href={href} className={active ? "active" : ""} key={label}><Icon /><span>{label}</span></Link>)}
+    <div className={styles.spacer} aria-hidden="true" />
+    <nav className={styles.navigation} aria-label={en ? "Mobile navigation" : "เมนูด้านล่างสำหรับมือถือ"}>
+      {links.map(({ href, label, icon: Icon, active }) => <Link href={href} className={active ? styles.active : ""} key={label}><Icon /><span>{label}</span></Link>)}
     </nav>
-    <button className={`scroll-top ${showTop ? "visible" : ""}`} onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} aria-label={en ? "Scroll to top" : "กลับขึ้นด้านบน"}><ArrowUp /></button>
+    <button className={`${styles.scrollTop} ${showTop ? styles.scrollTopVisible : ""}`} onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} aria-label={en ? "Scroll to top" : "กลับขึ้นด้านบน"}><ArrowUp /></button>
   </>;
 }
