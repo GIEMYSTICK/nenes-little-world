@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Mali, Noto_Sans_Thai } from "next/font/google";
 import "./globals.css";
 import { MobileNavigation } from "@/components/MobileNavigation";
+import { GoogleAnalytics } from "@/components/GoogleAnalytics";
 import { getSiteUrl } from "@/lib/site-url";
 
 const noto = Noto_Sans_Thai({
@@ -49,7 +50,11 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="th">
-      <body className={`${noto.variable} ${mali.variable}`}>{children}<MobileNavigation /></body>
+      <body className={`${noto.variable} ${mali.variable}`}>
+        {children}
+        <MobileNavigation />
+        <GoogleAnalytics />
+      </body>
     </html>
   );
 }
