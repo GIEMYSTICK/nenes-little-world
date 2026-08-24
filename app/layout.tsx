@@ -22,17 +22,19 @@ const siteUrl = getSiteUrl();
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: "Nene's Little World | บันทึกความทรงจำของเนเน่",
-  description: "เรื่องราวเล็ก ๆ ของเด็กผู้หญิงตัวน้อย ที่ทำให้โลกของเราสดใสขึ้นทุกวัน",
-  keywords: ["Nene", "เนเน่", "Baby Memory", "Baby Diary", "Family Memories"],
+  title: "เนเน่ ตัวจิ๋ว | Nene's Little World",
+  description: "เว็บไซต์ของเนเน่ ตัวจิ๋ว บันทึกเรื่องราว พัฒนาการ และการผจญภัยเล็ก ๆ ของเด็กจิ๋ว พร้อมความทรงจำแสนอบอุ่นของครอบครัว",
+  keywords: ["เนเน่ ตัวจิ๋ว", "เนเน่ตัวจิ๋ว", "เนเน่ เด็กจิ๋ว", "เด็กจิ๋ว", "การผจญภัยของเนเน่", "ของใช้แม่และเด็ก", "ของใช้เด็ก", "ร้านของเนเน่", "ฝากขายของใช้แม่และเด็ก", "Nene's Little World"],
   alternates: { canonical: "/", languages: { "th-TH": "/", en: "/en" } },
   openGraph: {
-    title: "Nene's Little World",
-    description: "ยินดีต้อนรับสู่โลกใบเล็ก ๆ ของเนเน่",
-    images: [{ url: "/images/nene-card.png", width: 1122, height: 1402, alt: "Nene's Little World" }],
+    title: "เนเน่ ตัวจิ๋ว | Nene's Little World",
+    description: "ติดตามเรื่องราว พัฒนาการ และการผจญภัยเล็ก ๆ ของเนเน่ ตัวจิ๋ว",
+    images: [{ url: "/images/nene-card.png", width: 1122, height: 1402, alt: "เนเน่ ตัวจิ๋ว - Nene's Little World" }],
     type: "website",
+    locale: "th_TH",
+    siteName: "Nene's Little World",
   },
-  twitter: { card: "summary_large_image", title: "Nene's Little World", description: "ยินดีต้อนรับสู่โลกใบเล็ก ๆ ของเนเน่", images: ["/images/nene-card.png"] },
+  twitter: { card: "summary_large_image", title: "เนเน่ ตัวจิ๋ว | Nene's Little World", description: "เรื่องราวและการผจญภัยเล็ก ๆ ของเนเน่ ตัวจิ๋ว", images: ["/images/nene-card.png"] },
   icons: {
     icon: [{ url: "/icon.png", type: "image/png", sizes: "512x512" }],
     shortcut: "/icon.png",
