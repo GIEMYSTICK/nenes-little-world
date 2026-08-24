@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { ExternalLink, Mail, MapPin, MessageCircle, Phone } from "lucide-react";
+import { VisitorCounter } from "@/components/VisitorCounter";
 
 export function Footer({ locale = "th" }: { locale?: "th" | "en" }) {
   const en = locale === "en";
@@ -39,6 +40,8 @@ export function Footer({ locale = "th" }: { locale?: "th" | "en" }) {
           </address>
         </div>
       </div>
+
+      <div className="footer-counter-wrap"><VisitorCounter locale={locale} /></div>
 
       <div className="footer-bottom">
         <div className="footer-legal"><a href="/privacy">{en ? "Privacy Policy" : "นโยบายความเป็นส่วนตัว"}</a><a href="/data-deletion">{en ? "Data Deletion" : "การลบข้อมูล"}</a></div>
