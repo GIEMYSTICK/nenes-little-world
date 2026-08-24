@@ -7,8 +7,8 @@ export function VisitorCounter({ locale = "th" }: { locale?: "th" | "en" }) {
   const [count, setCount] = useState<number | null>(null);
 
   useEffect(() => {
-    const storageKey = "nene-visitor-counted-v1";
-    const countStorageKey = "nene-visitor-count-v1";
+    const storageKey = "nene-visitor-counted-v2";
+    const countStorageKey = "nene-visitor-count-v2";
     const alreadyCounted = window.localStorage.getItem(storageKey) === "yes";
     const savedCount = Number(window.localStorage.getItem(countStorageKey) || 0);
     fetch("/api/visitors", { method: alreadyCounted ? "GET" : "POST" })
