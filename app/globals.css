@@ -275,6 +275,14 @@ a.contact-item:hover { background: rgba(255,255,255,.09); border-color: rgba(185
 .footer-legal { display: flex; flex-wrap: wrap; gap: 16px; }
 .footer-legal a { color: #91a4b7; font-size: 11px; }
 .footer-legal a:hover { color: white; }
+.footer-counter-wrap { position: relative; z-index: 2; margin: 38px auto 0; display: flex; justify-content: center; }
+.visitor-counter { min-width: 320px; display: flex; align-items: center; gap: 15px; padding: 15px 22px; border: 1px solid rgba(255,255,255,.16); border-radius: 22px; background: linear-gradient(135deg, rgba(154,211,244,.16), rgba(255,220,226,.1)); box-shadow: inset 0 1px rgba(255,255,255,.12); }
+.visitor-counter-icon { width: 48px; height: 48px; flex: 0 0 48px; display: grid; place-items: center; border-radius: 16px; background: rgba(255,255,255,.13); color: #a9ddfa; }
+.visitor-counter-icon svg { width: 23px; }
+.visitor-counter-copy { flex: 1; display: grid; grid-template-columns: 1fr auto; align-items: baseline; column-gap: 20px; }
+.visitor-counter-copy > span { color: rgba(255,255,255,.74); font-size: 12px; }
+.visitor-counter-copy strong { grid-row: 1 / 3; grid-column: 2; color: #fff; font-family: var(--font-mali); font-size: 29px; line-height: 1; }
+.visitor-counter-copy small { display: flex; align-items: center; gap: 6px; margin-top: 4px; color: #f3b8c5; font-size: 11px; }
 
 .legal-page { min-height: 100svh; padding: 70px 20px; background: linear-gradient(145deg, #eef8fe, #fffaf1); }
 .legal-page article { width: min(760px, 100%); margin: auto; padding: clamp(28px, 6vw, 60px); border: 1px solid rgba(255,255,255,.9); border-radius: 30px; background: rgba(255,255,255,.9); box-shadow: var(--shadow); }
@@ -420,6 +428,10 @@ a.contact-item:hover { background: rgba(255,255,255,.09); border-color: rgba(185
   .footer-brand h2 { font-size: 26px; }
   .footer-brand p { font-size: 13px; }
   .contact-item { padding-right: 36px; overflow-wrap: anywhere; }
+  .footer-counter-wrap { margin-top: 30px; }
+  .visitor-counter { width: 100%; min-width: 0; padding: 14px 16px; }
+  .visitor-counter-copy { column-gap: 10px; }
+  .visitor-counter-copy strong { font-size: 25px; }
   .footer-bottom { margin-top: 42px; grid-template-columns: 1fr; gap: 12px; text-align: center; }
   .footer-bottom small { justify-self: center; }
   .footer-legal { justify-content: center; }
