@@ -1,0 +1,25 @@
+name: Deploy English loading
+on:
+  push:
+    paths:
+      - nene-en-loading-deploy.zip
+permissions:
+  contents: write
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Extract update
+        run: |
+          unzip -o nene-en-loading-deploy.zip -d /tmp/nene-en-loading
+          cp /tmp/nene-en-loading/loading.tsx app/en/loading.tsx
+          rm nene-en-loading-deploy.zip
+          rm .github/workflows/deploy-en-loading.yml
+      - name: Commit update
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Add English loading screen"
+          git push
