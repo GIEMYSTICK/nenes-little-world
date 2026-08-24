@@ -8,11 +8,17 @@ export function VisitorCounter({ locale = "th" }: { locale?: "th" | "en" }) {
 
   useEffect(() => {
     const storageKey = "nene-visitor-counted-v1";
+    const countStorageKey = "nene-visitor-count-v1";
     const alreadyCounted = window.localStorage.getItem(storageKey) === "yes";
+    const savedCount = Number(window.localStorage.getItem(countStorageKey) || 0);
     fetch("/api/visitors", { method: alreadyCounted ? "GET" : "POST" })
       .then((response) => response.ok ? response.json() : Promise.reject())
       .then((data: { count?: number }) => {
-        if (typeof data.count === "number") setCount(data.count);
+        if (typeof data.count === "number") {
+          const latestCount = Math.max(savedCount, data.count);
+          setCount(latestCount);
+          window.localStorage.setItem(countStorageKey, String(latestCount));
+        }
         if (!alreadyCounted) window.localStorage.setItem(storageKey, "yes");
       })
       .catch(() => setCount(null));
