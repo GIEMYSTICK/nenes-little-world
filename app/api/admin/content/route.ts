@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { requireAdmin } from "@/lib/admin-auth";
 
-const schema = z.object({ id: z.string().uuid(), title: z.string().max(300), body: z.string().max(10000), is_published: z.boolean() });
+const schema = z.object({ id: z.string().uuid(), title: z.string().max(300), body: z.string().max(10000), is_published: z.boolean(), payload: z.record(z.string(), z.unknown()).default({}) });
 
 export async function PATCH(request: Request) {
   const admin = await requireAdmin(request);

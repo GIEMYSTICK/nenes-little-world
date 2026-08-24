@@ -42,3 +42,11 @@ export type AdminOverview = {
   content: Array<Record<string, unknown>>;
   counts: { products: number; orders: number; consignments: number; revenue: number };
 };
+
+export type UploadedMedia = { url: string; path: string };
+
+export type SiteContent = {
+  title?: string | null;
+  body?: string | null;
+  payload?: { image_url?: string; image_path?: string; [key: string]: unknown } | null;
+};

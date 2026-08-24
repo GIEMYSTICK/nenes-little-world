@@ -1,7 +1,8 @@
 import { ArrowDown, ShoppingBag } from "lucide-react";
 import { NeneAgeBadge } from "@/components/NeneAge";
+import type { SiteContent } from "@/lib/commerce-types";
 
-export function Hero({ locale = "th", content }: { locale?: "th" | "en"; content?: { title?: string; body?: string } | null }) {
+export function Hero({ locale = "th", content }: { locale?: "th" | "en"; content?: SiteContent | null }) {
   const en = locale === "en";
   return (
     <section className="hero" id="home">
@@ -29,7 +30,7 @@ export function Hero({ locale = "th", content }: { locale?: "th" | "en"; content
             playsInline
             controls
             preload="metadata"
-            poster="/images/nene-wink.jpeg"
+            poster={typeof content?.payload?.image_url === "string" ? content.payload.image_url : "/images/nene-wink.jpeg"}
             aria-label={en ? "Nene's introduction video" : "วิดีโอแนะนำตัวน้องเนเน่"}
           >
             <source src="/videos/nene-introduction.mp4" type="video/mp4" />
