@@ -14,8 +14,19 @@ import { getSiteContent } from "@/lib/catalog";
 
 export default async function Home() {
   const heroContent = await getSiteContent("home_hero", "th");
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://nenes-little-world.vercel.app";
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "Nene's Little World",
+    alternateName: ["เนเน่ ตัวจิ๋ว", "เนเน่ตัวจิ๋ว", "เว็บไซต์น้องเนเน่"],
+    url: siteUrl,
+    inLanguage: "th-TH",
+    description: "เรื่องราว พัฒนาการ และการผจญภัยเล็ก ๆ ของเนเน่ ตัวจิ๋ว",
+  };
   return (
     <main>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData).replace(/</g, "\\u003c") }} />
       <MotionController />
       <Navbar />
       <Hero content={heroContent} />
