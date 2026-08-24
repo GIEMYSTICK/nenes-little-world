@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from "next";
 import { Mali, Noto_Sans_Thai } from "next/font/google";
 import "./globals.css";
 import { MobileNavigation } from "@/components/MobileNavigation";
-import { GoogleAnalytics } from "@/components/GoogleAnalytics";
 import { GoogleTagManager } from "@/components/GoogleTagManager";
 import { getSiteUrl } from "@/lib/site-url";
 
@@ -55,7 +54,6 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <GoogleTagManager />
         {children}
         <MobileNavigation />
-        <GoogleAnalytics />
       </body>
     </html>
   );
