@@ -3,14 +3,14 @@
 import { FormEvent, useState } from "react";
 import { Heart, Mail, Send } from "lucide-react";
 
-type FormState = "idle" | "success";
+type FormState = "idle" | "sending" | "success" | "error";
 
 export function ContactForm({ locale = "th" }: { locale?: "th" | "en" }) {
   const en = locale === "en";
   const [state, setState] = useState<FormState>("idle");
   const [message, setMessage] = useState("");
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = event.currentTarget;
     const data = new FormData(form);
@@ -18,11 +18,16 @@ export function ContactForm({ locale = "th" }: { locale?: "th" | "en" }) {
     const email = String(data.get("email") || "");
     const subject = String(data.get("subject") || "ข้อความถึงเนเน่");
     const body = String(data.get("message") || "");
-    const mailBody = `ชื่อ: ${name}\nอีเมลสำหรับติดต่อกลับ: ${email}\n\n${body}`;
-
-    window.location.href = `mailto:nene.yanitah2026@gmail.com?subject=${encodeURIComponent(`[เว็บไซต์เนเน่] ${subject}`)}&body=${encodeURIComponent(mailBody)}`;
-    setState("success");
-    setMessage(en ? "Your email app is ready. Please review the message and press Send ♡" : "เปิดแอปอีเมลให้แล้ว กรุณาตรวจข้อความและกดส่งอีกครั้งนะคะ ♡");
+    setState("sending"); setMessage("");
+    try {
+      const response = await fetch("/api/contact", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name, email, subject, message: body, website: data.get("website") }) });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.message);
+      form.reset(); setState("success");
+      setMessage(en ? "Message sent. We’ve also emailed you a little thank-you note ♡" : "ส่งข้อความเรียบร้อยแล้ว พร้อมส่งอีเมลขอบคุณกลับไปให้คุณด้วยค่ะ ♡");
+    } catch (error) {
+      setState("error"); setMessage(error instanceof Error ? error.message : (en ? "Unable to send right now" : "ไม่สามารถส่งข้อความได้ในขณะนี้"));
+    }
   }
 
   return (
@@ -49,8 +54,8 @@ export function ContactForm({ locale = "th" }: { locale?: "th" | "en" }) {
           <label>{en ? "Message" : "ข้อความ"}<textarea name="message" rows={6} minLength={5} maxLength={3000} required placeholder={en ? "Write your lovely message to Nene here..." : "เขียนข้อความน่ารัก ๆ ถึงเนเน่ตรงนี้ได้เลย..."} /></label>
           <label className="contact-honeypot" aria-hidden="true">เว็บไซต์<input name="website" type="text" tabIndex={-1} autoComplete="off" /></label>
           <label className="contact-consent"><input type="checkbox" required /> <span>{en ? "I agree that this information may be used to reply to my message." : "ฉันยินยอมให้เว็บไซต์ใช้ข้อมูลนี้เพื่อติดต่อกลับเกี่ยวกับข้อความนี้"}</span></label>
-          <button className="contact-submit" type="submit">
-            <Send size={17} /> {en ? "Open email to send" : "เปิดอีเมลเพื่อส่งหาเนเน่"}
+          <button className="contact-submit" type="submit" disabled={state === "sending"}>
+            <Send size={17} /> {state === "sending" ? (en ? "Sending…" : "กำลังส่ง…") : (en ? "Send message" : "ส่งข้อความหาเนเน่")}
           </button>
           <div className={`contact-result ${state}`} role="status" aria-live="polite">{message}</div>
         </form>

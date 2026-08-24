@@ -1,42 +1,83 @@
 # Nene's Little World
 
-เว็บไซต์ Baby Memory / Baby Diary ของน้องเนเน่ สร้างด้วย Next.js, React, TypeScript และ Tailwind CSS พร้อมนำขึ้น Vercel
+เว็บไซต์ความทรงจำสองภาษา พร้อมหน้าร้าน ระบบฝากขาย ระบบชำระเงิน Stripe และ Admin Dashboard สำหรับครอบครัวเนเน่
 
-## เริ่มต้นใช้งาน
+## ฟีเจอร์หลัก
+
+- Baby Memory ภาษาไทย/อังกฤษ รองรับมือถือและเดสก์ท็อป
+- ร้านค้าสินค้าแม่และเด็ก พร้อมหมวดหมู่ สต็อก สภาพสินค้า และสินค้าแนะนำ
+- Stripe-hosted Checkout และ Webhook บันทึกคำสั่งซื้อ
+- แบบฟอร์มฝากขาย พร้อมเลขอ้างอิงและอีเมลตอบกลับ
+- Admin Dashboard จัดการสินค้า ออเดอร์ ฝากขาย และคอนเทนต์
+- Supabase Auth, Postgres และ Row Level Security (RLS)
+- Contact form ส่งผ่าน Gmail SMTP ไปยัง `jiminun1@gmail.com`
+
+## เริ่มต้น
 
 ```bash
 npm install
+cp .env.example .env.local
 npm run dev
 ```
 
-เปิด [http://localhost:3000](http://localhost:3000)
-
-## ตรวจสอบ Production Build
+เปิด `http://localhost:3000` และตรวจระบบด้วย:
 
 ```bash
+npm run lint
 npm run build
-npm start
 ```
 
-## แก้ไขเนื้อหา
+## ตั้งค่า Supabase
 
-- ข้อมูลน้อง พัฒนาการ รูปภาพ ความทรงจำ และวิดีโอ: `data/nene.ts`
-- รูปภาพ: `public/images/`
-- วิดีโอ: `public/videos/`
-- หน้าและส่วนประกอบ: `app/` และ `components/`
-
-## Deploy บน Vercel
-
-นำ repository เข้า Vercel แล้วใช้ค่า Framework Preset เป็น Next.js
-
-## Facebook Comments
-
-สร้างแอปที่ [Meta for Developers](https://developers.facebook.com/apps/) แล้วเพิ่ม Environment Variables ใน Vercel:
+1. สร้าง Supabase project
+2. เปิด SQL Editor แล้วรันไฟล์ `supabase/schema.sql` ทั้งไฟล์
+3. เพิ่มค่าจาก Project Settings → API ลง `.env.local` และ Vercel:
 
 ```bash
-NEXT_PUBLIC_FACEBOOK_APP_ID=Facebook App ID
-NEXT_PUBLIC_SITE_URL=https://โดเมนจริงของเว็บไซต์
-NEXT_PUBLIC_FACEBOOK_GRAPH_VERSION=v26.0
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=
+SUPABASE_SERVICE_ROLE_KEY=
 ```
 
-`NEXT_PUBLIC_SITE_URL` ควรเป็นโดเมนถาวร เพราะ Facebook จะแยกความคิดเห็นตาม URL ห้ามใส่ Facebook App Secret ในตัวแปรที่ขึ้นต้นด้วย `NEXT_PUBLIC_`
+4. ไปที่ Authentication → Users แล้วสร้างผู้ใช้ Admin
+5. นำ UUID ของผู้ใช้ไปรันคำสั่งท้ายไฟล์ `supabase/schema.sql` เพื่อเพิ่มสิทธิ์ `admin`
+6. เข้าหลังบ้านที่ `/admin`
+
+ห้ามส่ง `SUPABASE_SERVICE_ROLE_KEY` ไปยัง Client หรือใช้ชื่อตัวแปรที่ขึ้นต้นด้วย `NEXT_PUBLIC_`
+
+## ตั้งค่า Stripe
+
+เพิ่มตัวแปรต่อไปนี้ใน Vercel Production:
+
+```bash
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=
+STRIPE_SECRET_KEY=
+STRIPE_WEBHOOK_SECRET=
+```
+
+ใน Stripe Workbench → Webhooks ให้ใช้ Endpoint URL:
+
+```text
+https://โดเมนของคุณ/api/stripe/webhook
+```
+
+เลือก Event `checkout.session.completed` แล้วคัดลอก Signing secret (`whsec_...`) ไปใส่ `STRIPE_WEBHOOK_SECRET` จากนั้น Redeploy
+
+## ตั้งค่าอีเมล
+
+```bash
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=465
+SMTP_USER=jiminun1@gmail.com
+SMTP_APP_PASSWORD=Google-App-Password
+CONTACT_TO_EMAIL=jiminun1@gmail.com
+```
+
+## หน้าสำคัญ
+
+- `/` และ `/en` — เว็บไซต์ความทรงจำ
+- `/shop` และ `/en/shop` — หน้าร้าน
+- `/sell-with-nene` และ `/en/sell-with-nene` — ฝากขาย
+- `/admin` — ระบบหลังบ้าน
+
+ไฟล์ `.env*` ถูกกันออกจาก Git แล้ว ห้าม Commit ค่าลับทุกชนิดขึ้น GitHub

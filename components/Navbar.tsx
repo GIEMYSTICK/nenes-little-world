@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { Languages, Menu, X } from "lucide-react";
+import { Languages, Menu, ShoppingBag, X } from "lucide-react";
 
 const linksTh = [
   ["หน้าแรก", "home"],
@@ -39,6 +39,7 @@ export function Navbar({ locale = "th" }: { locale?: "th" | "en" }) {
       </a>
       <nav className="desktop-nav" aria-label="เมนูหลัก">
         {links.map(([label, id]) => <a key={id} href={`#${id}`}>{label}</a>)}
+        <a className="nav-shop" href={locale === "th" ? "/shop" : "/en/shop"}><ShoppingBag size={15} /> Shop</a>
         <a className="language-switch" href={languageHref} aria-label={locale === "th" ? "Switch to English" : "เปลี่ยนเป็นภาษาไทย"}><Languages size={15} /> {languageLabel}</a>
       </nav>
       <button
@@ -55,6 +56,7 @@ export function Navbar({ locale = "th" }: { locale?: "th" | "en" }) {
           {links.map(([label, id]) => (
             <a key={id} href={`#${id}`} onClick={() => setOpen(false)}>{label}</a>
           ))}
+          <a className="nav-shop" href={locale === "th" ? "/shop" : "/en/shop"}><ShoppingBag size={17} /> Shop Now</a>
           <a className="language-switch" href={languageHref}><Languages size={17} /> {locale === "th" ? "English" : "ภาษาไทย"}</a>
         </nav>
       )}

@@ -8,14 +8,18 @@ import { Footer } from "@/components/Footer";
 import { MotionController } from "@/components/MotionController";
 import { NeneAgeHeadline, NeneAgeStats, NeneAgeThai, NeneTotalDays } from "@/components/NeneAge";
 import { ContactForm } from "@/components/ContactForm";
+import { ShopPreview } from "@/components/ShopPreview";
 import { baby, memories, milestones, videos } from "@/data/nene";
+import { getSiteContent } from "@/lib/catalog";
 
-export default function Home() {
+export default async function Home() {
+  const heroContent = await getSiteContent("home_hero", "th");
   return (
     <main>
       <MotionController />
       <Navbar />
-      <Hero />
+      <Hero content={heroContent} />
+      <ShopPreview />
 
       <section className="profile section" id="about">
         <div className="profile-image">

@@ -10,7 +10,7 @@ export default function PrivacyPage() {
         <h2>ความคิดเห็นผ่าน Facebook</h2>
         <p>ส่วนความคิดเห็นให้บริการโดย Meta/Facebook เมื่อผู้เยี่ยมชมเลือกเข้าสู่ระบบหรือแสดงความคิดเห็น ข้อมูลดังกล่าวจะถูกประมวลผลตามนโยบายของ Meta และอาจรวมถึงชื่อ รูปโปรไฟล์ และเนื้อหาความคิดเห็นที่ผู้ใช้เลือกเผยแพร่</p>
         <h2>การติดต่อ</h2>
-        <p>หากมีคำถามเกี่ยวกับข้อมูลบนเว็บไซต์ ติดต่อได้ที่ <a href="mailto:nene.yanitah2026@gmail.com">nene.yanitah2026@gmail.com</a></p>
+        <p>หากมีคำถามเกี่ยวกับข้อมูลบนเว็บไซต์ ติดต่อได้ที่ <a href="mailto:jiminun1@gmail.com">jiminun1@gmail.com</a></p>
         <Link href="/">← กลับสู่หน้าแรก</Link>
       </article>
     </main>

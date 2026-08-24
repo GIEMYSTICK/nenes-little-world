@@ -28,9 +28,9 @@ export function Footer({ locale = "th" }: { locale?: "th" | "en" }) {
               <Phone aria-hidden="true" />
               <span>+66 90 326 8641</span>
             </a>
-            <a className="contact-item" href="mailto:nene.yanitah2026@gmail.com">
+            <a className="contact-item" href="mailto:jiminun1@gmail.com">
               <Mail aria-hidden="true" />
-              <span>nene.yanitah2026@gmail.com</span>
+              <span>jiminun1@gmail.com</span>
             </a>
             <a className="contact-item" href="https://www.facebook.com/nene.tuajiew/" target="_blank" rel="noreferrer">
               <MessageCircle aria-hidden="true" />

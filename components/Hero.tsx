@@ -1,7 +1,7 @@
-import { ArrowDown } from "lucide-react";
+import { ArrowDown, ShoppingBag } from "lucide-react";
 import { NeneAgeBadge } from "@/components/NeneAge";
 
-export function Hero({ locale = "th" }: { locale?: "th" | "en" }) {
+export function Hero({ locale = "th", content }: { locale?: "th" | "en"; content?: { title?: string; body?: string } | null }) {
   const en = locale === "en";
   return (
     <section className="hero" id="home">
@@ -16,9 +16,9 @@ export function Hero({ locale = "th" }: { locale?: "th" | "en" }) {
       <div className="hero-copy">
         <p className="eyebrow">A tiny place full of love</p>
         <h1>Nene&apos;s<br /><em>Little World</em></h1>
-        <p className="hero-welcome">Welcome to my little world <span>♡</span></p>
-        <p className="hero-thai">{en ? "A little corner filled with smiles, wonder, and love." : "ยินดีต้อนรับสู่โลกใบเล็ก ๆ ของเนเน่"}</p>
-        <a className="primary-button" href="#milestones">{en ? "Discover Nene’s story" : "ดูเรื่องราวของเนเน่"} <ArrowDown size={18} /></a>
+        <p className="hero-welcome">{content?.title || (en ? "Welcome to my little world" : "ยินดีต้อนรับสู่โลกใบเล็ก ๆ ของเนเน่")} <span>♡</span></p>
+        <p className="hero-thai">{content?.body || (en ? "A little corner filled with smiles, wonder, and love." : "เรื่องราวเล็ก ๆ ที่เต็มไปด้วยรอยยิ้ม ความมหัศจรรย์ และความรัก")}</p>
+        <div className="hero-actions"><a className="primary-button" href="#milestones">{en ? "Discover Nene’s story" : "ดูเรื่องราวของเนเน่"} <ArrowDown size={18} /></a><a className="hero-shop-button" href={en ? "/en/shop" : "/shop"}><ShoppingBag size={18} /> Shop Now</a></div>
       </div>
       <div className="hero-visual">
         <div className="hero-photo-wrap">

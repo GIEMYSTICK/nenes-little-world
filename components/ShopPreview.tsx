@@ -1,0 +1,9 @@
+import { ArrowRight, HeartHandshake, ShoppingBag } from "lucide-react";
+import { getCatalog } from "@/lib/catalog";
+import type { Locale } from "@/lib/commerce-types";
+
+export async function ShopPreview({ locale = "th" }: { locale?: Locale }) {
+  const en = locale === "en";
+  const { products } = await getCatalog();
+  return <section className="shop-preview section"><div className="shop-preview-copy"><p className="eyebrow">Nene&apos;s little shop</p><h2>{en ? "Little essentials, loved and ready to be shared" : "ของใช้ชิ้นเล็ก ส่งต่อความรักครั้งใหญ่"}</h2><p>{en ? "Discover carefully selected baby and parent essentials, or let Nene help your pre-loved items find a new family." : "เลือกชมของใช้แม่และเด็กที่คัดสรรแล้ว หรือฝากให้เนเน่ช่วยส่งต่อของที่ยังดีไปยังครอบครัวใหม่"}</p><div><a className="shop-now-home" href={en ? "/en/shop" : "/shop"}><ShoppingBag size={18} /> Shop Now <ArrowRight size={17} /></a><a className="sell-home" href={en ? "/en/sell-with-nene" : "/sell-with-nene"}><HeartHandshake size={18} /> {en ? "Sell with Nene" : "ฝากขายกับเนเน่"}</a></div></div><div className="shop-preview-cards">{products.slice(0, 3).map((product) => <article key={product.id}><span>{product.category?.slug === "feeding" ? "🍼" : product.category?.slug === "strollers" ? "🛞" : "🧸"}</span><b>{en ? product.name_en : product.name_th}</b><small>฿{Number(product.price).toLocaleString()}</small></article>)}{products.length === 0 && <><article><span>🍼</span><b>{en ? "Feeding essentials" : "ขวดนมและของใช้"}</b><small>{en ? "Coming soon" : "เร็ว ๆ นี้"}</small></article><article><span>🧸</span><b>{en ? "Baby favourites" : "ของโปรดของหนูน้อย"}</b><small>{en ? "Coming soon" : "เร็ว ๆ นี้"}</small></article><article><span>🛞</span><b>{en ? "On the go" : "รถเข็นและคาร์ซีท"}</b><small>{en ? "Coming soon" : "เร็ว ๆ นี้"}</small></article></>}</div></section>;
+}

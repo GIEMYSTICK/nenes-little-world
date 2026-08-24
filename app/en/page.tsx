@@ -9,8 +9,10 @@ import { Footer } from "@/components/Footer";
 import { MotionController } from "@/components/MotionController";
 import { NeneAgeEnglish, NeneAgeHeadline, NeneAgeStats, NeneTotalDays } from "@/components/NeneAge";
 import { ContactForm } from "@/components/ContactForm";
+import { ShopPreview } from "@/components/ShopPreview";
 import { baby, videos } from "@/data/nene";
 import { LanguageDocument } from "./LanguageDocument";
+import { getSiteContent } from "@/lib/catalog";
 
 export const metadata: Metadata = {
   title: "Nene's Little World | Baby Memories",
@@ -34,10 +36,11 @@ const memoriesEn = [
   { icon: "✦", title: "The Little Moments", text: "Every expression and tiny gesture becomes a memory to treasure." },
 ];
 
-export default function EnglishHome() {
+export default async function EnglishHome() {
+  const heroContent = await getSiteContent("home_hero", "en");
   return (
     <main>
-      <LanguageDocument /><MotionController /><Navbar locale="en" /><Hero locale="en" />
+      <LanguageDocument /><MotionController /><Navbar locale="en" /><Hero locale="en" content={heroContent} /><ShopPreview locale="en" />
       <section className="profile section" id="about">
         <div className="profile-image"><div className="profile-frame"><Image src="/images/nene-joy.png" alt="Nene smiling brightly" fill sizes="(max-width: 760px) 90vw, 42vw" /></div><div className="profile-sticker">hello! <span>♡</span></div></div>
         <div className="profile-copy"><SectionHeading kicker="Meet our little sunshine" title="Hello, I'm Nene 👶🏻" align="left" /><p className="profile-lead">I may be just one tiny little girl,<br />but I have changed Mom and Dad’s whole world.</p><dl className="baby-facts">
