@@ -16,9 +16,9 @@ export function Hero({ locale = "th", content }: { locale?: "th" | "en"; content
       </div>
       <div className="hero-copy">
         <p className="eyebrow">A tiny place full of love</p>
-        <h1>Nene&apos;s<br /><em>Little World</em></h1>
-        <p className="hero-welcome">{content?.title || (en ? "Welcome to my little world" : "ยินดีต้อนรับสู่โลกใบเล็ก ๆ ของเนเน่")} <span>♡</span></p>
-        <p className="hero-thai">{content?.body || (en ? "A little corner filled with smiles, wonder, and love." : "เรื่องราวเล็ก ๆ ที่เต็มไปด้วยรอยยิ้ม ความมหัศจรรย์ และความรัก")}</p>
+        <h1>{en ? <>Nene&apos;s<br /><em>Little World</em></> : <>เนเน่<br /><em>ตัวจิ๋ว</em></>}</h1>
+        <p className="hero-welcome">{content?.title || (en ? "Welcome to my little world" : "ยินดีต้อนรับสู่โลกใบเล็ก ๆ ของเนเน่ ตัวจิ๋ว")} <span>♡</span></p>
+        <p className="hero-thai">{content?.body || (en ? "A little corner filled with smiles, wonder, and love." : "ติดตามเรื่องราว พัฒนาการ และการผจญภัยเล็ก ๆ ของเด็กจิ๋วที่ทำให้โลกของเราสดใสขึ้นทุกวัน")}</p>
         <div className="hero-actions"><a className="primary-button" href="#milestones">{en ? "Discover Nene’s story" : "ดูเรื่องราวของเนเน่"} <ArrowDown size={18} /></a><a className="hero-shop-button" href={en ? "/en/shop" : "/shop"}><ShoppingBag size={18} /> Shop Now</a></div>
       </div>
       <div className="hero-visual">
