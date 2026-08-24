@@ -3,6 +3,7 @@ import { Mali, Noto_Sans_Thai } from "next/font/google";
 import "./globals.css";
 import { MobileNavigation } from "@/components/MobileNavigation";
 import { GoogleAnalytics } from "@/components/GoogleAnalytics";
+import { GoogleTagManager } from "@/components/GoogleTagManager";
 import { getSiteUrl } from "@/lib/site-url";
 
 const noto = Noto_Sans_Thai({
@@ -51,6 +52,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="th">
       <body className={`${noto.variable} ${mali.variable}`}>
+        <GoogleTagManager />
         {children}
         <MobileNavigation />
         <GoogleAnalytics />
