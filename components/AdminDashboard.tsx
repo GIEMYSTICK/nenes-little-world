@@ -1154,11 +1154,8 @@ export function AdminDashboard() {
                 ยกเลิก
               </button>
               <button
-                type="button"
+                type="submit"
                 disabled={loading || uploading}
-                onClick={() => {
-                  if (productFormRef.current) void createProduct(productFormRef.current);
-                }}
               >
                 {loading ? <LoaderCircle className="spin" /> : <Save />}
                 {loading ? "กำลังบันทึก…" : "บันทึกสินค้า"}
