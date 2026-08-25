@@ -3627,6 +3627,16 @@ a.contact-item:hover {
   font-weight: 700;
   line-height: 1.45;
 }
+.admin-modal-help {
+  flex: 1 1 100%;
+  margin: 0;
+  color: #647789;
+  font-size: 11px;
+  line-height: 1.45;
+}
+.admin-modal footer button:first-of-type {
+  color: var(--ink);
+}
 
 .admin-product-cell {
   min-width: 220px;
@@ -4223,6 +4233,22 @@ a.contact-item:hover {
   .admin-modal form > header,
   .admin-modal form > footer {
     padding-inline: 14px;
+  }
+  .admin-modal form > footer {
+    display: grid;
+    grid-template-columns: minmax(92px, 0.55fr) minmax(0, 1.45fr);
+    gap: 9px;
+    padding-block: 10px max(10px, env(safe-area-inset-bottom));
+  }
+  .admin-modal-help,
+  .admin-modal-error {
+    grid-column: 1 / -1;
+  }
+  .admin-modal footer button {
+    width: 100%;
+    min-width: 0;
+    justify-content: center;
+    touch-action: manipulation;
   }
   .image-manager-modal > section {
     max-height: calc(100svh - 16px);
