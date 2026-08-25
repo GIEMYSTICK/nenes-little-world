@@ -375,7 +375,12 @@ export function AdminDashboard() {
     setLoading(true);
     setNotice("");
     const nameEn = String(form.get("name_en") || "").trim() || nameTh;
-    const slug = String(form.get("slug") || "").trim() || `product-${Date.now()}`;
+    const requestedSlug = String(form.get("slug") || "")
+      .trim()
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "");
+    const slug = requestedSlug || `product-${Date.now()}`;
     const payload = {
       name_th: nameTh,
       name_en: nameEn,
