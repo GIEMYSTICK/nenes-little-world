@@ -4250,8 +4250,14 @@ a.contact-item:hover {
   .admin-modal footer button {
     width: 100%;
     min-width: 0;
+    min-height: 56px;
     justify-content: center;
     touch-action: manipulation;
+    font-size: 16px;
+    font-weight: 800;
+  }
+  .admin-modal footer button:last-child {
+    box-shadow: 0 10px 24px rgba(34, 61, 94, 0.2);
   }
   .image-manager-modal > section {
     max-height: calc(100svh - 16px);
