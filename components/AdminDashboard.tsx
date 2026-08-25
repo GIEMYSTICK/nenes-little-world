@@ -1,7 +1,7 @@
 "use client";
 /* eslint-disable @next/next/no-img-element -- authenticated previews use dynamic Supabase URLs */
 
-import { FormEvent, useCallback, useEffect, useState } from "react";
+import { FormEvent, useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import {
   BarChart3,
@@ -110,6 +110,7 @@ export function AdminDashboard() {
   const [uploading, setUploading] = useState(false);
   const [notice, setNotice] = useState("");
   const [productError, setProductError] = useState("");
+  const productFormRef = useRef<HTMLFormElement>(null);
 
   const load = useCallback(
     async (token: string) => {
@@ -351,21 +352,26 @@ export function AdminDashboard() {
 
   async function createProduct(formElement: HTMLFormElement) {
     setProductError("");
-    if (!formElement.checkValidity()) {
-      const invalid = formElement.querySelector<HTMLElement>(":invalid");
+    const form = new FormData(formElement);
+    const nameTh = String(form.get("name_th") || "").trim();
+    const priceText = String(form.get("price") || "").trim();
+    const missing = [!nameTh && "ชื่อสินค้า", !priceText && "ราคา"].filter(Boolean);
+    if (missing.length) {
+      const fieldName = !nameTh ? "name_th" : "price";
+      const invalid = formElement.elements.namedItem(fieldName) as HTMLElement | null;
       invalid?.scrollIntoView({ behavior: "smooth", block: "center" });
       invalid?.focus();
-      formElement.reportValidity();
-      setProductError("กรุณากรอกช่องที่จำเป็นให้ครบและตรวจสอบรูปแบบข้อมูล");
+      setProductError(`กรุณากรอก ${missing.join(" และ ")} ก่อนบันทึกสินค้า`);
       return;
     }
     setLoading(true);
     setNotice("");
-    const form = new FormData(formElement);
+    const nameEn = String(form.get("name_en") || "").trim() || nameTh;
+    const slug = String(form.get("slug") || "").trim() || `product-${Date.now()}`;
     const payload = {
-      name_th: form.get("name_th"),
-      name_en: form.get("name_en"),
-      slug: form.get("slug"),
+      name_th: nameTh,
+      name_en: nameEn,
+      slug,
       description_th: form.get("description_th"),
       description_en: form.get("description_en"),
       category_id: form.get("category_id") || null,
@@ -381,8 +387,8 @@ export function AdminDashboard() {
       sku: form.get("sku") || null,
       image_urls: draftImages.map((image) => ({
         url: image.url,
-        alt_th: form.get("name_th"),
-        alt_en: form.get("name_en"),
+        alt_th: nameTh,
+        alt_en: nameEn,
       })),
     };
     try {
@@ -976,6 +982,7 @@ export function AdminDashboard() {
       {newProduct && (
         <div className="admin-modal" role="dialog" aria-modal="true">
           <form
+            ref={productFormRef}
             onSubmit={(event) => {
               event.preventDefault();
               void createProduct(event.currentTarget);
@@ -1004,15 +1011,14 @@ export function AdminDashboard() {
               </label>
               <label>
                 Product name (English)
-                <input name="name_en" required />
+                <input name="name_en" placeholder="เว้นว่างเพื่อใช้ชื่อภาษาไทย" />
               </label>
               <label>
                 Slug URL
                 <input
                   name="slug"
-                  required
                   pattern="[a-z0-9-]+"
-                  placeholder="baby-bottle-blue"
+                  placeholder="สร้างให้อัตโนมัติเมื่อเว้นว่าง"
                 />
               </label>
               <label>
@@ -1130,6 +1136,11 @@ export function AdminDashboard() {
               </label>
             </div>
             <footer>
+              {!productError && (
+                <p className="admin-modal-help">
+                  ช่องที่จำเป็น: ชื่อสินค้าและราคา · ชื่ออังกฤษกับ Slug สร้างให้อัตโนมัติได้
+                </p>
+              )}
               {productError && (
                 <p className="admin-modal-error" role="alert">
                   {productError}
@@ -1145,10 +1156,8 @@ export function AdminDashboard() {
               <button
                 type="button"
                 disabled={loading || uploading}
-                onClick={(event) => {
-                  if (event.currentTarget.form) {
-                    void createProduct(event.currentTarget.form);
-                  }
+                onClick={() => {
+                  if (productFormRef.current) void createProduct(productFormRef.current);
                 }}
               >
                 {loading ? <LoaderCircle className="spin" /> : <Save />}
