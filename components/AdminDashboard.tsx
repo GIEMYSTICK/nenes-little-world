@@ -349,9 +349,7 @@ export function AdminDashboard() {
     }
   }
 
-  async function createProduct(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const formElement = event.currentTarget;
+  async function createProduct(formElement: HTMLFormElement) {
     setProductError("");
     if (!formElement.checkValidity()) {
       const invalid = formElement.querySelector<HTMLElement>(":invalid");
@@ -977,7 +975,13 @@ export function AdminDashboard() {
       </section>
       {newProduct && (
         <div className="admin-modal" role="dialog" aria-modal="true">
-          <form onSubmit={createProduct} noValidate>
+          <form
+            onSubmit={(event) => {
+              event.preventDefault();
+              void createProduct(event.currentTarget);
+            }}
+            noValidate
+          >
             <header>
               <div>
                 <b>เพิ่มสินค้าใหม่</b>
@@ -1138,7 +1142,15 @@ export function AdminDashboard() {
               >
                 ยกเลิก
               </button>
-              <button type="submit" disabled={loading || uploading}>
+              <button
+                type="button"
+                disabled={loading || uploading}
+                onClick={(event) => {
+                  if (event.currentTarget.form) {
+                    void createProduct(event.currentTarget.form);
+                  }
+                }}
+              >
                 {loading ? <LoaderCircle className="spin" /> : <Save />}
                 {loading ? "กำลังบันทึก…" : "บันทึกสินค้า"}
               </button>
