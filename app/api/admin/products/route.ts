@@ -8,10 +8,14 @@ const productSchema = z
     name_en: z.string().trim().min(2).max(200),
     slug: z
       .string()
-      .trim()
-      .min(2)
-      .max(200)
-      .regex(/^[a-z0-9-]+$/),
+      .transform((value) =>
+        value
+          .trim()
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, "-")
+          .replace(/^-+|-+$/g, "") || `product-${Date.now()}`,
+      )
+      .pipe(z.string().min(2).max(200).regex(/^[a-z0-9-]+$/)),
     description_th: z.string().max(10000).default(""),
     description_en: z.string().max(10000).default(""),
     category_id: z.string().uuid().nullable(),

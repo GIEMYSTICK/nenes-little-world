@@ -3042,6 +3042,13 @@ a.contact-item:hover {
   background: #fff0f2;
   color: #ae4859;
 }
+.consignment-form[aria-disabled="true"] input,
+.consignment-form[aria-disabled="true"] textarea,
+.consignment-form[aria-disabled="true"] select,
+.consignment-form[aria-disabled="true"] button {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
 
 .admin-loading,
 .admin-setup,
@@ -3569,6 +3576,7 @@ a.contact-item:hover {
 }
 .admin-form-grid {
   padding: 23px;
+  padding-bottom: 88px;
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 15px;
@@ -3743,20 +3751,25 @@ a.contact-item:hover {
 }
 .media-add svg {
   width: 25px;
+  pointer-events: none;
 }
 .media-add span {
   padding: 0 !important;
   background: none !important;
   color: inherit !important;
   font-size: 10px !important;
+  pointer-events: none;
 }
 .media-add input,
 .upload-button input {
   position: absolute;
-  width: 1px !important;
-  height: 1px;
+  z-index: 2;
+  inset: 0;
+  width: 100% !important;
+  height: 100%;
   opacity: 0;
-  pointer-events: none;
+  cursor: pointer;
+  pointer-events: auto;
 }
 .content-image-editor {
   display: grid !important;
@@ -3812,6 +3825,10 @@ a.contact-item:hover {
 }
 .upload-button svg {
   width: 16px;
+  pointer-events: none;
+}
+.upload-button > :not(input) {
+  pointer-events: none;
 }
 .image-manager-modal > section {
   width: min(760px, 100%);
@@ -3930,6 +3947,19 @@ a.contact-item:hover {
   }
 }
 @media (max-width: 800px) {
+  .contact-form input,
+  .contact-form textarea,
+  .consignment-form input,
+  .consignment-form textarea,
+  .consignment-form select,
+  .admin-modal input,
+  .admin-modal textarea,
+  .admin-modal select,
+  .admin-content-card input,
+  .admin-content-card textarea,
+  .admin-login input {
+    font-size: 16px;
+  }
   .hero-actions {
     justify-content: center;
   }
@@ -4247,8 +4277,14 @@ a.contact-item:hover {
   .admin-modal footer button {
     width: 100%;
     min-width: 0;
+    min-height: 56px;
     justify-content: center;
     touch-action: manipulation;
+    font-size: 16px;
+    font-weight: 800;
+  }
+  .admin-modal footer button:last-child {
+    box-shadow: 0 10px 24px rgba(34, 61, 94, 0.2);
   }
   .image-manager-modal > section {
     max-height: calc(100svh - 16px);

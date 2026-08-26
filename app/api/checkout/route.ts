@@ -25,8 +25,16 @@ export async function POST(request: Request) {
     // Return to the same host that started Checkout. This keeps Preview and
     // custom-domain deployments isolated from one another.
     const origin = new URL(request.url).origin;
-    const name = locale === "en" ? product.name_en : product.name_th;
-    const description = locale === "en" ? product.description_en : product.description_th;
+    const name = String(
+      (locale === "en" ? product.name_en : product.name_th) ||
+        product.name_th ||
+        product.name_en ||
+        "Nene product",
+    ).trim();
+    const description = String(
+      (locale === "en" ? product.description_en : product.description_th) || "",
+    ).trim();
+    const currency = String(product.currency || "THB").toLowerCase();
     const images = [...(product.product_images ?? [])].sort((a, b) => a.sort_order - b.sort_order).map((image) => image.url).filter((url) => /^https:\/\//.test(url)).slice(0, 1);
 
     const session = await stripe.checkout.sessions.create({
@@ -39,9 +47,13 @@ export async function POST(request: Request) {
       line_items: [{
         quantity,
         price_data: {
-          currency: product.currency.toLowerCase(),
+          currency,
           unit_amount: Math.round(Number(product.price) * 100),
-          product_data: { name, description: description.slice(0, 500), ...(images.length ? { images } : {}) },
+          product_data: {
+            name,
+            ...(description ? { description: description.slice(0, 500) } : {}),
+            ...(images.length ? { images } : {}),
+          },
         },
       }],
       metadata: { product_id: product.id, quantity: String(quantity), locale },

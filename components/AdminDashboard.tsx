@@ -75,21 +75,26 @@ function storagePath(url: string) {
 
 async function optimizeImage(file: File) {
   if (file.type === "image/gif" || file.size < 900_000) return file;
-  const bitmap = await createImageBitmap(file);
-  const scale = Math.min(1, 1800 / Math.max(bitmap.width, bitmap.height));
-  const canvas = document.createElement("canvas");
-  canvas.width = Math.round(bitmap.width * scale);
-  canvas.height = Math.round(bitmap.height * scale);
-  canvas.getContext("2d")?.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
-  bitmap.close();
-  const blob = await new Promise<Blob | null>((resolve) =>
-    canvas.toBlob(resolve, "image/webp", 0.84),
-  );
-  return blob
-    ? new File([blob], `${file.name.replace(/\.[^.]+$/, "")}.webp`, {
-        type: "image/webp",
-      })
-    : file;
+  if (typeof createImageBitmap !== "function") return file;
+  try {
+    const bitmap = await createImageBitmap(file);
+    const scale = Math.min(1, 1800 / Math.max(bitmap.width, bitmap.height));
+    const canvas = document.createElement("canvas");
+    canvas.width = Math.round(bitmap.width * scale);
+    canvas.height = Math.round(bitmap.height * scale);
+    canvas.getContext("2d")?.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+    bitmap.close();
+    const blob = await new Promise<Blob | null>((resolve) =>
+      canvas.toBlob(resolve, "image/webp", 0.84),
+    );
+    return blob
+      ? new File([blob], `${file.name.replace(/\.[^.]+$/, "")}.webp`, {
+          type: "image/webp",
+        })
+      : file;
+  } catch {
+    return file;
+  }
 }
 
 export function AdminDashboard() {
@@ -224,6 +229,7 @@ export function AdminDashboard() {
     if (!files?.length) return;
     setUploading(true);
     setNotice("");
+    setProductError("");
     try {
       const uploaded: UploadedMedia[] = [];
       for (const file of Array.from(files).slice(
@@ -233,7 +239,9 @@ export function AdminDashboard() {
         uploaded.push(await uploadMedia(file, "products/drafts"));
       setDraftImages((current) => [...current, ...uploaded]);
     } catch (error) {
-      setNotice(error instanceof Error ? error.message : "อัปโหลดรูปไม่สำเร็จ");
+      setProductError(
+        error instanceof Error ? error.message : "อัปโหลดรูปไม่สำเร็จ",
+      );
     } finally {
       setUploading(false);
     }
@@ -367,7 +375,12 @@ export function AdminDashboard() {
     setLoading(true);
     setNotice("");
     const nameEn = String(form.get("name_en") || "").trim() || nameTh;
-    const slug = String(form.get("slug") || "").trim() || `product-${Date.now()}`;
+    const requestedSlug = String(form.get("slug") || "")
+      .trim()
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "");
+    const slug = requestedSlug || `product-${Date.now()}`;
     const payload = {
       name_th: nameTh,
       name_en: nameEn,
@@ -376,9 +389,11 @@ export function AdminDashboard() {
       description_en: form.get("description_en"),
       category_id: form.get("category_id") || null,
       price: Number(form.get("price")),
-      compare_at_price: form.get("compare_at_price")
-        ? Number(form.get("compare_at_price"))
-        : null,
+      compare_at_price:
+        form.get("compare_at_price") === "" ||
+        form.get("compare_at_price") === null
+          ? null
+          : Number(form.get("compare_at_price")),
       stock_quantity: Number(form.get("stock_quantity")),
       condition: form.get("condition"),
       brand: form.get("brand") || null,
@@ -949,10 +964,12 @@ export function AdminDashboard() {
                       {media ? "เปลี่ยนรูปจากเครื่อง" : "เพิ่มรูปจากเครื่อง"}
                       <input
                         type="file"
-                        accept="image/jpeg,image/png,image/webp,image/gif"
-                        onChange={(event) =>
-                          uploadContentImage(item, event.target.files)
-                        }
+                        accept="image/*"
+                        aria-label="เลือกรูปคอนเทนต์จากเครื่อง"
+                        onChange={(event) => {
+                          void uploadContentImage(item, event.target.files);
+                          event.currentTarget.value = "";
+                        }}
                         disabled={uploading}
                       />
                     </label>
@@ -1115,10 +1132,12 @@ export function AdminDashboard() {
                     <input
                       type="file"
                       multiple
-                      accept="image/jpeg,image/png,image/webp,image/gif"
-                      onChange={(event) =>
-                        uploadDraftImages(event.target.files)
-                      }
+                      accept="image/*"
+                      aria-label="เลือกรูปสินค้าจากโทรศัพท์"
+                      onChange={(event) => {
+                        void uploadDraftImages(event.target.files);
+                        event.currentTarget.value = "";
+                      }}
                       disabled={uploading || draftImages.length >= 8}
                     />
                   </label>
@@ -1153,13 +1172,7 @@ export function AdminDashboard() {
               >
                 ยกเลิก
               </button>
-              <button
-                type="button"
-                disabled={loading || uploading}
-                onClick={() => {
-                  if (productFormRef.current) void createProduct(productFormRef.current);
-                }}
-              >
+              <button type="submit" disabled={loading || uploading}>
                 {loading ? <LoaderCircle className="spin" /> : <Save />}
                 {loading ? "กำลังบันทึก…" : "บันทึกสินค้า"}
               </button>
@@ -1210,10 +1223,12 @@ export function AdminDashboard() {
                   <input
                     type="file"
                     multiple
-                    accept="image/jpeg,image/png,image/webp,image/gif"
-                    onChange={(event) =>
-                      addProductImages(imageProduct, event.target.files)
-                    }
+                    accept="image/*"
+                    aria-label="เลือกรูปสินค้าจากเครื่อง"
+                    onChange={(event) => {
+                      void addProductImages(imageProduct, event.target.files);
+                      event.currentTarget.value = "";
+                    }}
                     disabled={
                       uploading ||
                       (imageProduct.product_images?.length || 0) >= 8
