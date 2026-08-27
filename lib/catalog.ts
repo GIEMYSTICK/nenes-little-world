@@ -37,3 +37,25 @@ export async function getCatalog(): Promise<{ products: Product[]; categories: C
   }));
   return { products, categories: (categoriesResult.data ?? []) as Category[], configured: true };
 }
+
+export async function getProductBySlug(slug: string): Promise<Product | null> {
+  noStore();
+  const supabase = createPublicSupabase();
+  if (!supabase) return null;
+  const { data, error } = await supabase
+    .from("products")
+    .select("*, category:categories(name_th,name_en,slug), product_images(id,url,alt_th,alt_en,sort_order)")
+    .eq("slug", slug)
+    .eq("status", "active")
+    .maybeSingle();
+  if (error) {
+    console.error("Product query failed", error.message);
+    return null;
+  }
+  if (!data) return null;
+  const product = data as Product;
+  return {
+    ...product,
+    product_images: [...(product.product_images ?? [])].sort((a, b) => a.sort_order - b.sort_order),
+  };
+}

@@ -73,6 +73,14 @@ function storagePath(url: string) {
   );
 }
 
+const contentImageHelp: Record<string, string> = {
+  home_hero: "ภาพปกของวิดีโอส่วนหัวหน้าแรก",
+  home_profile: "รูปแนะนำตัวในส่วน Hello, I'm Nene",
+  home_chapter: "รูปในส่วน Our current little chapter สำหรับอัปเดตการเติบโต",
+  home_letter: "รูปข้างจดหมายจากพ่อและแม่",
+  shop_hero: "รูปนี้จะแสดงในส่วนหัวหน้าร้าน",
+};
+
 async function optimizeImage(file: File) {
   if (file.type === "image/gif" || file.size < 900_000) return file;
   if (typeof createImageBitmap !== "function") return file;
@@ -973,11 +981,7 @@ export function AdminDashboard() {
                         disabled={uploading}
                       />
                     </label>
-                    <small>
-                      {cell(item.content_key) === "shop_hero"
-                        ? "รูปนี้จะแสดงในส่วนหัวหน้าร้าน"
-                        : "รูปนี้ใช้เป็นภาพปกของวิดีโอหน้าแรก"}
-                    </small>
+                    <small>{contentImageHelp[cell(item.content_key)] || "ภาพประกอบคอนเทนต์บนเว็บไซต์"}</small>
                   </div>
                   <label className="publish-check">
                     <input

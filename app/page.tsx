@@ -13,7 +13,10 @@ import { baby, memories, milestones, videos } from "@/data/nene";
 import { getSiteContent } from "@/lib/catalog";
 
 export default async function Home() {
-  const heroContent = await getSiteContent("home_hero", "th");
+  const [heroContent, profileContent, chapterContent, letterContent] = await Promise.all([
+    getSiteContent("home_hero", "th"), getSiteContent("home_profile", "th"),
+    getSiteContent("home_chapter", "th"), getSiteContent("home_letter", "th"),
+  ]);
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://nenes-little-world.vercel.app";
   const structuredData = {
     "@context": "https://schema.org",
@@ -35,7 +38,7 @@ export default async function Home() {
       <section className="profile section" id="about">
         <div className="profile-image">
           <div className="profile-frame">
-            <Image src="/images/nene-joy.png" alt="น้องเนเน่ยิ้มสดใส" fill sizes="(max-width: 760px) 90vw, 42vw" />
+            <Image src={typeof profileContent?.payload?.image_url === "string" ? profileContent.payload.image_url : "/images/nene-joy.png"} alt="น้องเนเน่ยิ้มสดใส" fill sizes="(max-width: 760px) 90vw, 42vw" unoptimized={typeof profileContent?.payload?.image_url === "string"} />
           </div>
           <div className="profile-sticker">hello! <span>♡</span></div>
         </div>
@@ -69,7 +72,7 @@ export default async function Home() {
 
       <section className="one-month section" aria-labelledby="one-month-title">
         <div className="one-month-photo">
-          <Image src="/images/nene-one-month.jpeg" alt="เนเน่ในวันฉลองครบหนึ่งเดือน" fill sizes="(max-width: 800px) 94vw, 52vw" />
+          <Image src={typeof chapterContent?.payload?.image_url === "string" ? chapterContent.payload.image_url : "/images/nene-one-month.jpeg"} alt="เนเน่ในบทปัจจุบัน" fill sizes="(max-width: 800px) 94vw, 52vw" unoptimized={typeof chapterContent?.payload?.image_url === "string"} />
           <span><NeneTotalDays suffix=" days with you ♡" /></span>
         </div>
         <div className="one-month-copy">
@@ -118,7 +121,7 @@ export default async function Home() {
 
       <section className="letter section" aria-labelledby="letter-title">
         <div className="letter-photo">
-          <Image src="/images/nene-smile.jpeg" alt="รอยยิ้มเล็ก ๆ ของเนเน่" fill sizes="(max-width: 760px) 88vw, 38vw" />
+          <Image src={typeof letterContent?.payload?.image_url === "string" ? letterContent.payload.image_url : "/images/nene-smile.jpeg"} alt="รอยยิ้มเล็ก ๆ ของเนเน่" fill sizes="(max-width: 760px) 88vw, 38vw" unoptimized={typeof letterContent?.payload?.image_url === "string"} />
         </div>
         <article className="letter-paper">
           <span className="letter-mark">♡</span>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Link from "next/link";
 import { HeartHandshake, PackageSearch, SlidersHorizontal } from "lucide-react";
 import { BuyButton } from "@/components/BuyButton";
 import type { Category, Locale, Product } from "@/lib/commerce-types";
@@ -28,8 +29,9 @@ export function ShopCatalog({ products, categories, locale }: { products: Produc
           const image = product.product_images?.[0];
           const name = en ? product.name_en : product.name_th;
           const description = en ? product.description_en : product.description_th;
+          const href = en ? `/en/shop/${product.slug}` : `/shop/${product.slug}`;
           return <article className="product-card" key={product.id}>
-            <div className="product-image" style={image ? { backgroundImage: `url(${JSON.stringify(image.url).slice(1, -1)})` } : undefined}>{!image && <span>♡</span>}{product.featured && <b>{en ? "Nene’s pick" : "เนเน่แนะนำ"}</b>}</div>
+            <Link href={href} className="product-card-link" aria-label={`${en ? "View details" : "ดูรายละเอียด"} ${name}`}><div className="product-image" style={image ? { backgroundImage: `url(${JSON.stringify(image.url).slice(1, -1)})` } : undefined}>{!image && <span>♡</span>}{product.featured && <b>{en ? "Nene’s pick" : "เนเน่แนะนำ"}</b>}</div></Link>
             <div className="product-card-body"><div className="product-meta"><span>{conditionLabels[locale][product.condition]}</span><span>{en ? product.category?.name_en : product.category?.name_th}</span></div><h3>{name}</h3><p>{description}</p><div className="product-price"><strong>฿{Number(product.price).toLocaleString(locale === "th" ? "th-TH" : "en-US")}</strong>{product.compare_at_price && <del>฿{Number(product.compare_at_price).toLocaleString()}</del>}<small>{en ? `${product.stock_quantity} left` : `เหลือ ${product.stock_quantity} ชิ้น`}</small></div><BuyButton productId={product.id} disabled={product.stock_quantity < 1} locale={locale} /></div>
           </article>;
         })}</div>

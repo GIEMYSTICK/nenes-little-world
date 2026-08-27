@@ -2668,6 +2668,26 @@ a.contact-item:hover {
     transform 0.3s,
     box-shadow 0.3s;
 }
+.product-card-link { display: block; color: inherit; text-decoration: none; }
+.product-detail { padding-top: 9rem; }
+.product-back { display: inline-flex; align-items: center; gap: .5rem; color: #617892; text-decoration: none; margin-bottom: 2rem; font-weight: 700; }
+.product-detail-layout { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(320px, .85fr); gap: clamp(2rem, 5vw, 5rem); align-items: start; }
+.product-detail-gallery { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+.product-detail-gallery img, .product-detail-empty { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 28px; background: #edf7fd; }
+.product-detail-gallery img.primary { grid-column: 1 / -1; aspect-ratio: 4 / 3; }
+.product-detail-empty { grid-column: 1 / -1; display: grid; place-items: center; color: #8db8d2; font-size: 5rem; }
+.product-detail-copy { position: sticky; top: 7rem; }
+.product-detail-copy h1 { color: var(--navy); font-size: clamp(2.2rem, 5vw, 4.5rem); line-height: 1.05; margin: 1rem 0; }
+.product-detail-price { display: flex; align-items: baseline; gap: 1rem; margin: 1.5rem 0; }
+.product-detail-price strong { color: var(--navy); font-size: 2rem; }
+.product-detail-price del { color: #8d9bad; }
+.product-detail-description { color: #617188; line-height: 1.85; white-space: pre-line; }
+.product-detail-facts { border-block: 1px solid #dfebf3; margin: 1.5rem 0; padding: 1rem 0; }
+.product-detail-facts div { display: flex; justify-content: space-between; gap: 1rem; padding: .45rem 0; }
+.product-detail-facts dt { color: #7d8ea3; }.product-detail-facts dd { color: var(--navy); font-weight: 700; margin: 0; }
+.product-detail-assurance { display: grid; gap: .7rem; margin-top: 1.5rem; color: #63778f; font-size: .9rem; }
+.product-detail-assurance span { display: flex; align-items: center; gap: .65rem; }.product-detail-assurance svg { width: 18px; color: #6ba5c7; }
+@media (max-width: 800px) { .product-detail { padding-top: 7rem; }.product-detail-layout { grid-template-columns: 1fr; }.product-detail-copy { position: static; }.product-detail-gallery { gap: .65rem; }.product-detail-gallery img { border-radius: 18px; } }
 .product-card:hover {
   transform: translateY(-6px);
   box-shadow: var(--shadow);

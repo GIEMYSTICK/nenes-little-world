@@ -5,6 +5,14 @@ export async function GET(request: Request) {
   const admin = await requireAdmin(request);
   if (!admin) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   const { service } = admin;
+  await service.from("site_content").upsert([
+    { content_key: "home_profile", locale: "th", title: "Hello, I'm Nene", body: "ภาพแนะนำตัวเนเน่บนหน้าแรก", payload: { image_url: "/images/nene-joy.png", image_path: "" } },
+    { content_key: "home_chapter", locale: "th", title: "Our current little chapter", body: "ภาพอัปเดตการเติบโตของเนเน่ในบทปัจจุบัน", payload: { image_url: "/images/nene-one-month.jpeg", image_path: "" } },
+    { content_key: "home_letter", locale: "th", title: "A Letter From Mom & Dad", body: "ภาพประกอบจดหมายจากพ่อและแม่", payload: { image_url: "/images/nene-smile.jpeg", image_path: "" } },
+    { content_key: "home_profile", locale: "en", title: "Hello, I'm Nene", body: "Nene's introduction photo", payload: { image_url: "/images/nene-joy.png", image_path: "" } },
+    { content_key: "home_chapter", locale: "en", title: "Our current little chapter", body: "Nene's latest growth photo", payload: { image_url: "/images/nene-one-month.jpeg", image_path: "" } },
+    { content_key: "home_letter", locale: "en", title: "A Letter From Mom & Dad", body: "Photo beside the letter", payload: { image_url: "/images/nene-smile.jpeg", image_path: "" } },
+  ], { onConflict: "content_key,locale", ignoreDuplicates: true });
   const [products, categories, orders, consignments, content] = await Promise.all([
     service.from("products").select("*, category:categories(name_th,name_en,slug), product_images(id,url,alt_th,alt_en,sort_order)").order("created_at", { ascending: false }),
     service.from("categories").select("*").order("sort_order"),

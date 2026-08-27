@@ -211,6 +211,12 @@ on conflict (slug) do update set name_th = excluded.name_th, name_en = excluded.
 insert into public.site_content (content_key, locale, title, body) values
   ('home_hero', 'th', 'ยินดีต้อนรับสู่โลกใบเล็ก ๆ ของเนเน่', 'เรื่องราวเล็ก ๆ ของเด็กผู้หญิงตัวน้อยที่ทำให้โลกของเราสดใสขึ้นทุกวัน'),
   ('home_hero', 'en', 'Welcome to my little world', 'A little corner filled with smiles, wonder, and love.'),
+  ('home_profile', 'th', 'Hello, I''m Nene', 'ภาพแนะนำตัวเนเน่บนหน้าแรก'),
+  ('home_profile', 'en', 'Hello, I''m Nene', 'Nene''s introduction photo on the home page'),
+  ('home_chapter', 'th', 'Our current little chapter', 'ภาพอัปเดตการเติบโตของเนเน่ในบทปัจจุบัน'),
+  ('home_chapter', 'en', 'Our current little chapter', 'Nene''s latest growth photo'),
+  ('home_letter', 'th', 'A Letter From Mom & Dad', 'ภาพประกอบจดหมายจากพ่อและแม่'),
+  ('home_letter', 'en', 'A Letter From Mom & Dad', 'Photo beside the letter from Mom and Dad'),
   ('shop_hero', 'th', 'ของรักของเนเน่ ส่งต่อด้วยความใส่ใจ', 'สินค้าสำหรับแม่และเด็กที่คัดสรรแล้ว พร้อมเรื่องราวและรายละเอียดสภาพอย่างตรงไปตรงมา'),
   ('shop_hero', 'en', 'Loved by Nene, ready for a new family', 'Thoughtfully selected essentials for babies and parents, with honest condition details and a story behind every item.')
 on conflict (content_key, locale) do nothing;
