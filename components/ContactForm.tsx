@@ -24,7 +24,7 @@ export function ContactForm({ locale = "th" }: { locale?: "th" | "en" }) {
       const result = await response.json();
       if (!response.ok) throw new Error(result.message);
       form.reset(); setState("success");
-      setMessage(en ? "Message sent. We’ve also emailed you a little thank-you note ♡" : "ส่งข้อความเรียบร้อยแล้ว พร้อมส่งอีเมลขอบคุณกลับไปให้คุณด้วยค่ะ ♡");
+      setMessage(en ? "Message sent. Please check your inbox for an automatic confirmation." : "ส่งข้อความเรียบร้อยแล้ว กรุณาตรวจสอบอีเมลยืนยันอัตโนมัติในกล่องจดหมายค่ะ");
     } catch (error) {
       setState("error"); setMessage(error instanceof Error ? error.message : (en ? "Unable to send right now" : "ไม่สามารถส่งข้อความได้ในขณะนี้"));
     }
