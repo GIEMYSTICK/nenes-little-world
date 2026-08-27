@@ -126,7 +126,6 @@ export function AdminDashboard() {
   const [notice, setNotice] = useState("");
   const [productError, setProductError] = useState("");
   const productFormRef = useRef<HTMLFormElement>(null);
-  const editProductFormRef = useRef<HTMLFormElement>(null);
 
   const load = useCallback(
     async (token: string) => {
@@ -1250,7 +1249,7 @@ export function AdminDashboard() {
       )}
       {editingProduct && (
         <div className="admin-modal" role="dialog" aria-modal="true" aria-label="แก้ไขสินค้า">
-          <form ref={editProductFormRef} onSubmit={(event) => { event.preventDefault(); void saveProduct(event.currentTarget, editingProduct); }}>
+          <form onSubmit={(event) => { event.preventDefault(); void saveProduct(event.currentTarget, editingProduct); }}>
             <header><div><b>แก้ไขสินค้า</b><span>{editingProduct.name_th} · ปรับรายละเอียด ราคา สต็อก และสถานะ</span></div><button type="button" onClick={() => setEditingProduct(null)}><X /></button></header>
             <div className="admin-form-grid">
               <label>ชื่อสินค้า (ไทย)<input name="name_th" defaultValue={editingProduct.name_th} required /></label>
@@ -1268,7 +1267,7 @@ export function AdminDashboard() {
               <label className="feature-check wide"><input name="featured" type="checkbox" defaultChecked={editingProduct.featured} /> สินค้าแนะนำ</label>
               <div className="wide edit-product-media"><button type="button" onClick={() => { setImageProduct(editingProduct); setEditingProduct(null); }}><ImagePlus /> จัดการรูปภาพ ({editingProduct.product_images?.length || 0})</button></div>
             </div>
-            <footer>{productError && <p className="admin-modal-error" role="alert">{productError}</p>}<button type="button" className="danger-button" disabled={loading} onClick={() => void deleteProduct(editingProduct)}><Trash2 /> ลบสินค้า</button><button type="button" onClick={() => setEditingProduct(null)}>ยกเลิก</button><button type="button" disabled={loading} onClick={() => { if (editProductFormRef.current) void saveProduct(editProductFormRef.current, editingProduct); }}>{loading ? <LoaderCircle className="spin" /> : <Save />}{loading ? "กำลังบันทึก…" : "บันทึกการแก้ไข"}</button></footer>
+            <footer>{productError && <p className="admin-modal-error" role="alert">{productError}</p>}<button type="button" className="danger-button" disabled={loading} onClick={() => void deleteProduct(editingProduct)}><Trash2 /> ลบสินค้า</button><button type="button" onClick={() => setEditingProduct(null)}>ยกเลิก</button><button type="button" disabled={loading} onClick={(event) => { const form = event.currentTarget.closest("form"); if (form instanceof HTMLFormElement) void saveProduct(form, editingProduct); else setProductError("ไม่พบแบบฟอร์มสินค้า กรุณาปิดหน้าต่างแล้วลองอีกครั้ง"); }}>{loading ? <LoaderCircle className="spin" /> : <Save />}{loading ? "กำลังบันทึก…" : "บันทึกการแก้ไข"}</button></footer>
           </form>
         </div>
       )}
