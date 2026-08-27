@@ -11,7 +11,7 @@
 ```text
 เครื่องผู้พัฒนา
   └─ แก้ไขและทดสอบ Next.js
-       └─ Push ไป GitHub (main)
+       └─ Push ไป GitHub (remote: nene, branch: mail)
             └─ Vercel ตรวจพบ Commit และ Deploy อัตโนมัติ
                  ├─ Frontend ภาษาไทย/อังกฤษ
                  ├─ API Routes บน Vercel
@@ -282,7 +282,9 @@ git push -u origin feature/ชื่อฟีเจอร์
 7. เพิ่ม Environment Variables ตามหัวข้อ 5
 8. กด **Deploy**
 
-หลังเชื่อมสำเร็จ ทุก Commit ที่ Push เข้า `main` จะสร้าง Production Deployment ใหม่อัตโนมัติ ส่วน Pull Request จะได้ Preview Deployment
+ระบบปัจจุบันตั้ง **Production Branch เป็น `mail`** ดังนั้นทุก Commit ที่ Push เข้า `mail` จะสร้าง Production Deployment ใหม่อัตโนมัติ ส่วน branch อื่นและ Pull Request จะได้ Preview Deployment
+
+ตั้งค่าได้ที่ Vercel → Project Settings → Environments → Production → Branch Tracking โดยกำหนด Matching pattern เป็น `mail`
 
 ลำดับตั้งระบบใหม่ที่ปลอดภัย:
 
@@ -510,6 +512,43 @@ API มี Honeypot และ Rate Limit เบื้องต้น แต่�
 - เก็บข้อมูลเด็กและลูกค้าเท่าที่จำเป็น และจำกัดสิทธิ์เข้าถึงรูปหรือข้อมูลส่วนตัว
 
 ## 16. Workflow สรุปสำหรับการอัปเดตทั่วไป
+
+### 16.1 Workflow ปัจจุบันของโปรเจกต์นี้
+
+เครื่องพัฒนาหลักตั้งค่าไว้ดังนี้:
+
+- Git remote: `nene` → `https://github.com/GIEMYSTICK/nenes-little-world.git`
+- Local/remote branch: `mail`
+- Vercel Production Branch: `mail`
+- GitHub credential: Fine-grained personal access token เก็บใน macOS Keychain
+- ขอบเขต token: เฉพาะ `GIEMYSTICK/nenes-little-world`
+- Repository permissions: Contents — Read and write, Metadata — Read-only
+- วันหมดอายุ token ปัจจุบัน: 26 พฤศจิกายน 2026
+
+คำสั่งอัปเดต Production:
+
+```bash
+git switch mail
+npm run lint
+npm run build
+git add .
+git commit -m "อธิบายสิ่งที่แก้ไข"
+git push nene mail
+```
+
+หลัง Push ให้เปิด Vercel → Deployments และตรวจว่า Deployment ของ branch `mail` เป็น `Ready` จากนั้นทดสอบหน้าที่แก้ไขบนโดเมน Production จริง
+
+ตรวจค่าที่ตั้งไว้ได้ด้วย:
+
+```bash
+git status --short --branch
+git remote -v
+git branch -vv
+```
+
+ห้ามบันทึกค่าจริงของ token ลงในคู่มือ, `.env`, remote URL หรือ Git history หาก token หมดอายุ ให้สร้าง Fine-grained token ใหม่โดยใช้ขอบเขตและ permissions เท่าเดิม แล้วอัปเดต credential ใน macOS Keychain
+
+### 16.2 Workflow มาตรฐานสำหรับโปรเจกต์ที่ยังใช้ main
 
 ```bash
 git pull --ff-only origin main

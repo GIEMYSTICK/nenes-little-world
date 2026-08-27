@@ -29,6 +29,20 @@ npm run lint
 npm run build
 ```
 
+## อัปเดต Production
+
+โปรเจกต์นี้ใช้ Git remote ชื่อ `nene` และ branch `mail` เป็น Production Branch ของ Vercel:
+
+```bash
+git add .
+git commit -m "อธิบายสิ่งที่แก้ไข"
+git push nene mail
+```
+
+เมื่อ Push สำเร็จ Vercel จะ Build และ Deploy ไปยัง Production โดยอัตโนมัติ ควรรัน `npm run lint` และ `npm run build` ก่อน Push ทุกครั้ง
+
+GitHub Fine-grained token สำหรับเครื่องนี้เก็บใน macOS Keychain ไม่ได้เก็บใน Repository ห้ามใส่ token, App Password หรือ Secret ใด ๆ ลงใน Commit เอกสาร หรือคำสั่ง remote URL
+
 ## ตั้งค่า Supabase
 
 1. สร้าง Supabase project
