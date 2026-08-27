@@ -17,6 +17,7 @@ import {
   Mail,
   Menu,
   PackagePlus,
+  Pencil,
   RefreshCw,
   Save,
   ShoppingBag,
@@ -115,6 +116,7 @@ export function AdminDashboard() {
   const [tab, setTab] = useState<Tab>("overview");
   const [menu, setMenu] = useState(false);
   const [newProduct, setNewProduct] = useState(false);
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [imageProduct, setImageProduct] = useState<Product | null>(null);
   const [draftImages, setDraftImages] = useState<UploadedMedia[]>([]);
   const [contentMedia, setContentMedia] = useState<
@@ -450,6 +452,62 @@ export function AdminDashboard() {
     }
   }
 
+  async function saveProduct(event: FormEvent<HTMLFormElement>, product: Product) {
+    event.preventDefault();
+    const form = new FormData(event.currentTarget);
+    const payload = {
+      name_th: String(form.get("name_th") || "").trim(),
+      name_en: String(form.get("name_en") || "").trim(),
+      description_th: String(form.get("description_th") || ""),
+      description_en: String(form.get("description_en") || ""),
+      category_id: form.get("category_id") || null,
+      price: Number(form.get("price")),
+      compare_at_price: form.get("compare_at_price") ? Number(form.get("compare_at_price")) : null,
+      stock_quantity: Number(form.get("stock_quantity")),
+      condition: form.get("condition"),
+      brand: String(form.get("brand") || "").trim() || null,
+      sku: String(form.get("sku") || "").trim() || null,
+      status: form.get("status"),
+      featured: form.get("featured") === "on",
+    };
+    if (!payload.name_th || !payload.name_en || !Number.isFinite(payload.price) || !Number.isInteger(payload.stock_quantity)) {
+      setProductError("กรุณาตรวจชื่อสินค้า ราคา และจำนวนคงเหลือให้ถูกต้อง");
+      return;
+    }
+    setLoading(true);
+    setProductError("");
+    try {
+      await api(`/api/admin/products/${product.id}`, { method: "PATCH", body: JSON.stringify(payload) });
+      setEditingProduct(null);
+      await load(sessionToken);
+      setNotice("บันทึกรายละเอียดสินค้าเรียบร้อยแล้ว");
+    } catch (error) {
+      setProductError(error instanceof Error ? error.message : "บันทึกสินค้าไม่สำเร็จ");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function deleteProduct(product: Product) {
+    if (!window.confirm(`ลบสินค้า “${product.name_th}” อย่างถาวรใช่ไหม? รายการนี้กู้คืนไม่ได้`)) return;
+    setLoading(true);
+    setProductError("");
+    try {
+      await api(`/api/admin/products/${product.id}`, { method: "DELETE" });
+      await Promise.allSettled((product.product_images || []).map((image) => {
+        const path = storagePath(image.url);
+        return path ? removeStoredMedia({ url: image.url, path }) : Promise.resolve();
+      }));
+      setEditingProduct(null);
+      await load(sessionToken);
+      setNotice("ลบสินค้าเรียบร้อยแล้ว");
+    } catch (error) {
+      setProductError(error instanceof Error ? error.message : "ลบสินค้าไม่สำเร็จ");
+    } finally {
+      setLoading(false);
+    }
+  }
+
   async function updateStatus(
     entity: "orders" | "consignment_submissions",
     id: unknown,
@@ -728,6 +786,7 @@ export function AdminDashboard() {
                     <th>สต็อก</th>
                     <th>สถานะ</th>
                     <th>แนะนำ</th>
+                    <th>จัดการ</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -784,6 +843,11 @@ export function AdminDashboard() {
                           }
                           aria-label="สลับสินค้าแนะนำ"
                         />
+                      </td>
+                      <td>
+                        <button className="admin-edit-button" onClick={() => { setProductError(""); setEditingProduct(product); }}>
+                          <Pencil /> แก้ไข
+                        </button>
                       </td>
                     </tr>
                   ))}
@@ -1181,6 +1245,30 @@ export function AdminDashboard() {
                 {loading ? "กำลังบันทึก…" : "บันทึกสินค้า"}
               </button>
             </footer>
+          </form>
+        </div>
+      )}
+      {editingProduct && (
+        <div className="admin-modal" role="dialog" aria-modal="true" aria-label="แก้ไขสินค้า">
+          <form onSubmit={(event) => void saveProduct(event, editingProduct)}>
+            <header><div><b>แก้ไขสินค้า</b><span>{editingProduct.name_th} · ปรับรายละเอียด ราคา สต็อก และสถานะ</span></div><button type="button" onClick={() => setEditingProduct(null)}><X /></button></header>
+            <div className="admin-form-grid">
+              <label>ชื่อสินค้า (ไทย)<input name="name_th" defaultValue={editingProduct.name_th} required /></label>
+              <label>Product name (English)<input name="name_en" defaultValue={editingProduct.name_en} required /></label>
+              <label className="wide">รายละเอียด (ไทย)<textarea name="description_th" rows={4} defaultValue={editingProduct.description_th} /></label>
+              <label className="wide">Description (English)<textarea name="description_en" rows={4} defaultValue={editingProduct.description_en} /></label>
+              <label>หมวดหมู่<select name="category_id" defaultValue={editingProduct.category_id || ""}><option value="">ไม่ระบุ</option>{overview.categories.map((category) => <option value={category.id} key={category.id}>{category.icon} {category.name_th}</option>)}</select></label>
+              <label>สภาพ<select name="condition" defaultValue={editingProduct.condition}><option value="new">สินค้าใหม่</option><option value="like_new">เหมือนใหม่</option><option value="good">สภาพดี</option><option value="fair">ผ่านการใช้งาน</option></select></label>
+              <label>ราคาขาย<input name="price" type="number" min="0" step="0.01" defaultValue={editingProduct.price} required /></label>
+              <label>ราคาเดิม<input name="compare_at_price" type="number" min="0" step="0.01" defaultValue={editingProduct.compare_at_price ?? ""} /></label>
+              <label>จำนวนคงเหลือ<input name="stock_quantity" type="number" min="0" step="1" defaultValue={editingProduct.stock_quantity} required /></label>
+              <label>สถานะ<select name="status" defaultValue={editingProduct.status}><option value="draft">ฉบับร่าง</option><option value="active">เปิดขาย</option><option value="out_of_stock">สินค้าหมด</option><option value="sold">ขายแล้ว</option></select></label>
+              <label>ยี่ห้อ<input name="brand" defaultValue={editingProduct.brand || ""} /></label>
+              <label>SKU<input name="sku" defaultValue={editingProduct.sku || ""} /></label>
+              <label className="feature-check wide"><input name="featured" type="checkbox" defaultChecked={editingProduct.featured} /> สินค้าแนะนำ</label>
+              <div className="wide edit-product-media"><button type="button" onClick={() => { setImageProduct(editingProduct); setEditingProduct(null); }}><ImagePlus /> จัดการรูปภาพ ({editingProduct.product_images?.length || 0})</button></div>
+            </div>
+            <footer>{productError && <p className="admin-modal-error" role="alert">{productError}</p>}<button type="button" className="danger-button" disabled={loading} onClick={() => void deleteProduct(editingProduct)}><Trash2 /> ลบสินค้า</button><button type="button" onClick={() => setEditingProduct(null)}>ยกเลิก</button><button type="submit" disabled={loading}>{loading ? <LoaderCircle className="spin" /> : <Save />}{loading ? "กำลังบันทึก…" : "บันทึกการแก้ไข"}</button></footer>
           </form>
         </div>
       )}

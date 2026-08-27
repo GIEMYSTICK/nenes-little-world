@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { CreditCard, LoaderCircle } from "lucide-react";
+import { LoaderCircle, QrCode } from "lucide-react";
 import type { Locale } from "@/lib/commerce-types";
 
 export function BuyButton({ productId, disabled, locale }: { productId: string; disabled?: boolean; locale: Locale }) {
@@ -22,5 +22,5 @@ export function BuyButton({ productId, disabled, locale }: { productId: string; 
     }
   }
 
-  return <div className="buy-action"><button type="button" onClick={checkout} disabled={disabled || loading}>{loading ? <LoaderCircle className="spin" size={17} /> : <CreditCard size={17} />}{disabled ? (en ? "Sold out" : "สินค้าหมด") : loading ? (en ? "Opening…" : "กำลังเปิด…") : (en ? "Buy now" : "ซื้อเลย")}</button>{error && <span role="alert">{error}</span>}</div>;
+  return <div className="buy-action"><button type="button" onClick={checkout} disabled={disabled || loading}>{loading ? <LoaderCircle className="spin" size={17} /> : <QrCode size={17} />}{disabled ? (en ? "Sold out" : "สินค้าหมด") : loading ? (en ? "Opening…" : "กำลังเปิด…") : (en ? "Card or PromptPay" : "บัตรหรือสแกน PromptPay")}</button>{error && <span role="alert">{error}</span>}</div>;
 }

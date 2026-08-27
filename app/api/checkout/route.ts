@@ -39,7 +39,7 @@ export async function POST(request: Request) {
 
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
-      payment_method_types: ["card"],
+      payment_method_types: currency === "thb" ? ["card", "promptpay"] : ["card"],
       locale: locale === "th" ? "th" : "en",
       customer_creation: "always",
       phone_number_collection: { enabled: true },

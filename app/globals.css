@@ -3644,6 +3644,10 @@ a.contact-item:hover {
   background: var(--ink);
   color: white;
 }
+.admin-edit-button { display:inline-flex; align-items:center; gap:6px; min-height:38px; padding:0 12px; border:1px solid #d8e4ec; border-radius:10px; background:#fff; color:var(--ink); font-weight:800; }
+.admin-edit-button svg { width:15px; }
+.edit-product-media button { min-height:46px; padding:0 16px; border:1px solid #cfe0ea; border-radius:12px; background:#edf7fc; color:var(--ink); display:flex; align-items:center; gap:8px; font-weight:800; }
+.admin-modal footer .danger-button { margin-right:auto; border-color:#efcbd1; color:#a83d51; background:#fff5f6; }
 .admin-modal-error {
   flex: 1 1 100%;
   margin: 0 auto 0 0;
