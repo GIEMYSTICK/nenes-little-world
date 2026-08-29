@@ -3,15 +3,15 @@ export const NENE_BIRTH_DATE = { year: 2026, month: 7, day: 9 } as const;
 export const baby = {
   thaiName: "เนเน่",
   englishName: "Nene",
-  birthDate: "9 กรกฎาคม 2569",
-  birthDateShort: "9 July 2026",
+  birthDate: "9 กรกฎาคม",
+  birthDateShort: "9 July",
   birthWeight: "2.8 kg",
   currentWeight: "ประมาณ 4 kg",
 };
 
 export const milestones = [
   {
-    date: "09 JUL 2026",
+    date: "09 JUL",
     title: "Hello World",
     description: "วันที่เนเน่เกิดและได้พบกับโลกใบนี้เป็นครั้งแรก",
     icon: "♡",
@@ -31,17 +31,17 @@ export const milestones = [
 ];
 
 export const photos = [
-  { src: "/images/nene-wink.jpeg", alt: "เนเน่ขยิบตาในชุดสีฟ้า", caption: "เจ้าตัวเล็กขยิบตา" },
-  { src: "/images/nene-one-month.jpeg", alt: "ภาพฉลองเนเน่ครบหนึ่งเดือน", caption: "ครบหนึ่งเดือนแล้วนะ" },
-  { src: "/images/nene-smile.jpeg", alt: "เนเน่ยิ้มแลบลิ้นเล็กน้อย", caption: "รอยยิ้มประจำวัน" },
-  { src: "/images/nene-blue-hat.jpeg", alt: "เนเน่ใส่หมวกสีฟ้า", caption: "หมวกใบโปรด" },
-  { src: "/images/nene-pink-blanket.jpeg", alt: "เนเน่ห่อตัวในผ้าสีชมพู", caption: "อุ่นที่สุด" },
-  { src: "/images/nene-awake.jpeg", alt: "เนเน่ลืมตาในชุดสีฟ้า", caption: "ตื่นมาดูโลก" },
-  { src: "/images/nene-sleeping.jpeg", alt: "เนเน่นอนหลับบนผ้าห่มสีฟ้า", caption: "ฝันหวานนะคะ" },
-  { src: "/images/nene-milk.jpeg", alt: "เนเน่กำลังดื่มนม", caption: "มื้ออร่อยของหนู" },
-  { src: "/images/nene-car-seat.jpeg", alt: "เนเน่นอนในคาร์ซีต", caption: "พร้อมออกเดินทาง" },
-  { src: "/images/nene-card.png", alt: "การ์ดข้อความน่ารักของเนเน่", caption: "วันอาทิตย์ของเนเน่" },
-  { src: "/images/nene-joy.png", alt: "เนเน่ยกแขนยิ้มอย่างสดใส", caption: "เย้! โลกของหนู" },
+  { src: "/images/nene-wink.jpeg", alt: "เนเน่ขยิบตาในชุดสีฟ้า", caption: "เจ้าตัวเล็กขยิบตา", captionEn: "A tiny wink" },
+  { src: "/images/nene-one-month.jpeg", alt: "ภาพฉลองเนเน่ครบหนึ่งเดือน", caption: "ครบหนึ่งเดือนแล้วนะ", captionEn: "One month of love" },
+  { src: "/images/nene-smile.jpeg", alt: "เนเน่ยิ้มแลบลิ้นเล็กน้อย", caption: "รอยยิ้มประจำวัน", captionEn: "Today's little smile" },
+  { src: "/images/nene-blue-hat.jpeg", alt: "เนเน่ใส่หมวกสีฟ้า", caption: "หมวกใบโปรด", captionEn: "My favourite blue hat" },
+  { src: "/images/nene-pink-blanket.jpeg", alt: "เนเน่ห่อตัวในผ้าสีชมพู", caption: "อุ่นที่สุด", captionEn: "Warm and cosy" },
+  { src: "/images/nene-awake.jpeg", alt: "เนเน่ลืมตาในชุดสีฟ้า", caption: "ตื่นมาดูโลก", captionEn: "Wide awake" },
+  { src: "/images/nene-sleeping.jpeg", alt: "เนเน่นอนหลับบนผ้าห่มสีฟ้า", caption: "ฝันหวานนะคะ", captionEn: "Sweet dreams" },
+  { src: "/images/nene-milk.jpeg", alt: "เนเน่กำลังดื่มนม", caption: "มื้ออร่อยของหนู", captionEn: "A delicious little meal" },
+  { src: "/images/nene-car-seat.jpeg", alt: "เนเน่นอนในคาร์ซีต", caption: "พร้อมออกเดินทาง", captionEn: "Ready for an adventure" },
+  { src: "/images/nene-card.png", alt: "การ์ดข้อความน่ารักของเนเน่", caption: "วันอาทิตย์ของเนเน่", captionEn: "Nene's Sunday" },
+  { src: "/images/nene-joy.png", alt: "เนเน่ยกแขนยิ้มอย่างสดใส", caption: "เย้! โลกของหนู", captionEn: "Hooray, my little world!" },
 ];
 
 export const memories = [

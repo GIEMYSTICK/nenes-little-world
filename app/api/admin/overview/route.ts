@@ -1,5 +1,15 @@
 import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/admin-auth";
+import { photos } from "@/data/nene";
+
+const galleryPhotos = photos.map((photo) => ({
+  url: photo.src,
+  path: "",
+  alt_th: photo.alt,
+  alt_en: photo.captionEn,
+  caption_th: photo.caption,
+  caption_en: photo.captionEn,
+}));
 
 export async function GET(request: Request) {
   const admin = await requireAdmin(request);
@@ -12,6 +22,7 @@ export async function GET(request: Request) {
     { content_key: "home_profile", locale: "en", title: "Hello, I'm Nene", body: "Nene's introduction photo", payload: { image_url: "/images/nene-joy.png", image_path: "" } },
     { content_key: "home_chapter", locale: "en", title: "Our current little chapter", body: "Nene's latest growth photo", payload: { image_url: "/images/nene-one-month.jpeg", image_path: "" } },
     { content_key: "home_letter", locale: "en", title: "A Letter From Mom & Dad", body: "Photo beside the letter", payload: { image_url: "/images/nene-smile.jpeg", image_path: "" } },
+    { content_key: "home_gallery", locale: "th", title: "Little Moments", body: "จัดการภาพความทรงจำในแกลเลอรีทั้งเว็บไซต์ภาษาไทยและอังกฤษ", payload: { photos: galleryPhotos } },
   ], { onConflict: "content_key,locale", ignoreDuplicates: true });
   const [products, categories, orders, consignments, content] = await Promise.all([
     service.from("products").select("*, category:categories(name_th,name_en,slug), product_images(id,url,alt_th,alt_en,sort_order)").order("created_at", { ascending: false }),

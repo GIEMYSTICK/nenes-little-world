@@ -217,6 +217,7 @@ insert into public.site_content (content_key, locale, title, body) values
   ('home_chapter', 'en', 'Our current little chapter', 'Nene''s latest growth photo'),
   ('home_letter', 'th', 'A Letter From Mom & Dad', 'ภาพประกอบจดหมายจากพ่อและแม่'),
   ('home_letter', 'en', 'A Letter From Mom & Dad', 'Photo beside the letter from Mom and Dad'),
+  ('home_gallery', 'th', 'Little Moments', 'จัดการภาพความทรงจำในแกลเลอรีทั้งเว็บไซต์ภาษาไทยและอังกฤษ'),
   ('shop_hero', 'th', 'ของรักของเนเน่ ส่งต่อด้วยความใส่ใจ', 'สินค้าสำหรับแม่และเด็กที่คัดสรรแล้ว พร้อมเรื่องราวและรายละเอียดสภาพอย่างตรงไปตรงมา'),
   ('shop_hero', 'en', 'Loved by Nene, ready for a new family', 'Thoughtfully selected essentials for babies and parents, with honest condition details and a story behind every item.')
 on conflict (content_key, locale) do nothing;

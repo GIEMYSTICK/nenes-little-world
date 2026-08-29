@@ -7,6 +7,8 @@ import {
   BarChart3,
   Boxes,
   CheckCircle2,
+  ChevronDown,
+  ChevronUp,
   FileText,
   HeartHandshake,
   ImagePlus,
@@ -68,6 +70,19 @@ function mediaFromContent(item: Record<string, unknown>): UploadedMedia | null {
       }
     : null;
 }
+type GalleryMedia = UploadedMedia & { alt_th: string; alt_en: string; caption_th: string; caption_en: string };
+
+function galleryFromContent(item: Record<string, unknown>): GalleryMedia[] {
+  const payload = item.payload && typeof item.payload === "object" ? item.payload as Record<string, unknown> : {};
+  if (!Array.isArray(payload.photos)) return [];
+  return payload.photos.flatMap((value) => {
+    if (!value || typeof value !== "object") return [];
+    const photo = value as Record<string, unknown>;
+    const url = typeof photo.url === "string" ? photo.url : "";
+    if (!url) return [];
+    return [{ url, path: typeof photo.path === "string" ? photo.path : "", alt_th: String(photo.alt_th || "ภาพความทรงจำของเนเน่"), alt_en: String(photo.alt_en || "Nene gallery photo"), caption_th: String(photo.caption_th || "ช่วงเวลาเล็ก ๆ"), caption_en: String(photo.caption_en || "Little moment") }];
+  });
+}
 function storagePath(url: string) {
   return decodeURIComponent(
     url.split("/storage/v1/object/public/nene-media/")[1] || "",
@@ -122,6 +137,7 @@ export function AdminDashboard() {
   const [contentMedia, setContentMedia] = useState<
     Record<string, UploadedMedia | null>
   >({});
+  const [galleryMedia, setGalleryMedia] = useState<Record<string, GalleryMedia[]>>({});
   const [uploading, setUploading] = useState(false);
   const [notice, setNotice] = useState("");
   const [productError, setProductError] = useState("");
@@ -156,6 +172,7 @@ export function AdminDashboard() {
           ]),
         ),
       );
+      setGalleryMedia(Object.fromEntries((data.content || []).map((item: Record<string, unknown>) => [String(item.id), galleryFromContent(item)])));
       setLoading(false);
     },
     [supabase],
@@ -368,6 +385,40 @@ export function AdminDashboard() {
     }
   }
 
+  async function uploadGalleryImages(item: Record<string, unknown>, files: FileList | null) {
+    if (!files?.length) return;
+    setUploading(true);
+    setNotice("");
+    try {
+      const uploaded: GalleryMedia[] = [];
+      for (const file of Array.from(files).slice(0, 20)) {
+        const media = await uploadMedia(file, "content/home_gallery");
+        uploaded.push({ ...media, alt_th: "ภาพความทรงจำของเนเน่", alt_en: "Nene gallery photo", caption_th: file.name.replace(/\.[^.]+$/, ""), caption_en: "Little moment" });
+      }
+      const id = String(item.id);
+      setGalleryMedia((current) => ({ ...current, [id]: [...(current[id] || []), ...uploaded].slice(0, 30) }));
+      setNotice("เพิ่มรูปแกลเลอรีแล้ว กรุณาตรวจคำบรรยายและกดบันทึก");
+    } catch (error) {
+      setNotice(error instanceof Error ? error.message : "อัปโหลดรูปแกลเลอรีไม่สำเร็จ");
+    } finally {
+      setUploading(false);
+    }
+  }
+
+  function updateGalleryPhoto(id: string, index: number, patch: Partial<GalleryMedia>) {
+    setGalleryMedia((current) => ({ ...current, [id]: (current[id] || []).map((photo, photoIndex) => photoIndex === index ? { ...photo, ...patch } : photo) }));
+  }
+
+  function moveGalleryPhoto(id: string, index: number, direction: -1 | 1) {
+    setGalleryMedia((current) => {
+      const photos = [...(current[id] || [])];
+      const target = index + direction;
+      if (target < 0 || target >= photos.length) return current;
+      [photos[index], photos[target]] = [photos[target], photos[index]];
+      return { ...current, [id]: photos };
+    });
+  }
+
   async function createProduct(formElement: HTMLFormElement) {
     setProductError("");
     const form = new FormData(formElement);
@@ -535,11 +586,8 @@ export function AdminDashboard() {
         ? (item.payload as Record<string, unknown>)
         : {};
     const media = contentMedia[String(item.id)];
-    const payload = {
-      ...currentPayload,
-      image_url: media?.url || null,
-      image_path: media?.path || null,
-    };
+    const isGallery = item.content_key === "home_gallery";
+    const payload = isGallery ? { ...currentPayload, photos: galleryMedia[String(item.id)] || [] } : { ...currentPayload, image_url: media?.url || null, image_path: media?.path || null };
     try {
       await api("/api/admin/content", {
         method: "PATCH",
@@ -551,9 +599,13 @@ export function AdminDashboard() {
           payload,
         }),
       });
-      const previous = mediaFromContent(item);
-      if (previous?.path && previous.path !== media?.path)
-        await removeStoredMedia(previous).catch(() => undefined);
+      if (!isGallery) {
+        const previous = mediaFromContent(item);
+        if (previous?.path && previous.path !== media?.path) await removeStoredMedia(previous).catch(() => undefined);
+      } else {
+        const currentPaths = new Set((galleryMedia[String(item.id)] || []).map((photo) => photo.path).filter(Boolean));
+        await Promise.allSettled(galleryFromContent(item).filter((photo) => photo.path && !currentPaths.has(photo.path)).map((photo) => removeStoredMedia(photo)));
+      }
       setNotice("บันทึกคอนเทนต์และรูปภาพแล้ว");
       await load(sessionToken);
     } catch (error) {
@@ -1008,6 +1060,30 @@ export function AdminDashboard() {
                       defaultValue={cell(item.body)}
                     />
                   </label>
+                  {item.content_key === "home_gallery" ? (
+                    <div className="gallery-content-editor">
+                      <div className="upload-heading"><b>ภาพในแกลเลอรี ({(galleryMedia[String(item.id)] || []).length}/30)</b><small>เพิ่มได้หลายภาพ แก้คำบรรยาย และเลื่อนลำดับก่อนบันทึก</small></div>
+                      <div className="gallery-admin-list">
+                        {(galleryMedia[String(item.id)] || []).map((photo, index) => (
+                          <div className="gallery-admin-item" key={`${photo.url}-${index}`}>
+                            <img src={photo.url} alt={photo.alt_th} />
+                            <div>
+                              <label>คำบรรยายไทย<input value={photo.caption_th} onChange={(event) => updateGalleryPhoto(String(item.id), index, { caption_th: event.target.value })} /></label>
+                              <label>English caption<input value={photo.caption_en} onChange={(event) => updateGalleryPhoto(String(item.id), index, { caption_en: event.target.value })} /></label>
+                              <label>Alt ไทย<input value={photo.alt_th} onChange={(event) => updateGalleryPhoto(String(item.id), index, { alt_th: event.target.value })} /></label>
+                              <label>English alt<input value={photo.alt_en} onChange={(event) => updateGalleryPhoto(String(item.id), index, { alt_en: event.target.value })} /></label>
+                            </div>
+                            <div className="gallery-admin-actions">
+                              <button type="button" aria-label="เลื่อนรูปขึ้น" disabled={index === 0} onClick={() => moveGalleryPhoto(String(item.id), index, -1)}><ChevronUp /></button>
+                              <button type="button" aria-label="เลื่อนรูปลง" disabled={index === (galleryMedia[String(item.id)] || []).length - 1} onClick={() => moveGalleryPhoto(String(item.id), index, 1)}><ChevronDown /></button>
+                              <button type="button" aria-label="ลบรูปจากแกลเลอรี" onClick={() => setGalleryMedia((current) => ({ ...current, [String(item.id)]: (current[String(item.id)] || []).filter((_, photoIndex) => photoIndex !== index) }))}><Trash2 /></button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                      <label className="upload-button"><UploadCloud /> เพิ่มรูปแกลเลอรีจากเครื่อง<input type="file" multiple accept="image/*" aria-label="เลือกรูปแกลเลอรีจากเครื่อง" onChange={(event) => { void uploadGalleryImages(item, event.target.files); event.currentTarget.value = ""; }} disabled={uploading || (galleryMedia[String(item.id)] || []).length >= 30} /></label>
+                    </div>
+                  ) : (
                   <div className="content-image-editor">
                     {media ? (
                       <div className="content-image-preview">
@@ -1046,6 +1122,7 @@ export function AdminDashboard() {
                     </label>
                     <small>{contentImageHelp[cell(item.content_key)] || "ภาพประกอบคอนเทนต์บนเว็บไซต์"}</small>
                   </div>
+                  )}
                   <label className="publish-check">
                     <input
                       type="checkbox"

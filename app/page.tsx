@@ -13,10 +13,11 @@ import { baby, memories, milestones, videos } from "@/data/nene";
 import { getSiteContent } from "@/lib/catalog";
 
 export default async function Home() {
-  const [heroContent, profileContent, chapterContent, letterContent] = await Promise.all([
+  const [heroContent, profileContent, chapterContent, letterContent, galleryContent] = await Promise.all([
     getSiteContent("home_hero", "th"), getSiteContent("home_profile", "th"),
-    getSiteContent("home_chapter", "th"), getSiteContent("home_letter", "th"),
+    getSiteContent("home_chapter", "th"), getSiteContent("home_letter", "th"), getSiteContent("home_gallery", "th"),
   ]);
+  const galleryPhotos = Array.isArray(galleryContent?.payload?.photos) ? galleryContent.payload.photos : undefined;
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://nenes-little-world.vercel.app";
   const structuredData = {
     "@context": "https://schema.org",
@@ -86,7 +87,7 @@ export default async function Home() {
 
       <section className="gallery section" id="gallery">
         <SectionHeading kicker="Our favourite tiny moments" title="Little Moments 📸" copy="ภาพธรรมดาในแต่ละวัน ที่กลายเป็นความทรงจำแสนพิเศษ" />
-        <Gallery />
+        <Gallery items={galleryPhotos} />
       </section>
 
       <section className="video-memories section section-soft" aria-labelledby="video-title">

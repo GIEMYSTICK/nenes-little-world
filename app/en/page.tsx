@@ -21,7 +21,7 @@ export const metadata: Metadata = {
 };
 
 const milestonesEn = [
-  { date: "09 JUL 2026", title: "Hello, World", description: "The day Nene was born and met this beautiful world for the very first time.", icon: "♡" },
+  { date: "09 JUL", title: "Hello, World", description: "The day Nene was born and met this beautiful world for the very first time.", icon: "♡" },
   { date: "1 MONTH", title: "My First Month", description: "One month of growing, learning, and being surrounded by love every day.", icon: "✦" },
   { date: "GROWING", title: "I'm Growing!", description: "Getting stronger every day, with new expressions and tiny wonders to discover.", icon: "☁" },
 ];
@@ -36,7 +36,8 @@ const memoriesEn = [
 ];
 
 export default async function EnglishHome() {
-  const heroContent = await getSiteContent("home_hero", "en");
+  const [heroContent, galleryContent] = await Promise.all([getSiteContent("home_hero", "en"), getSiteContent("home_gallery", "th")]);
+  const galleryPhotos = Array.isArray(galleryContent?.payload?.photos) ? galleryContent.payload.photos : undefined;
   return (
     <main>
       <MotionController /><Navbar locale="en" /><Hero locale="en" content={heroContent} /><ShopPreview locale="en" />
@@ -48,7 +49,7 @@ export default async function EnglishHome() {
       </section>
       <section className="milestones section section-soft" id="milestones"><SectionHeading kicker="Every little step matters" title="My Little Milestones" copy="Celebrating every tiny step that means the whole world to our family." /><div className="timeline">{milestonesEn.map((item, index) => <article className="timeline-card" key={item.title}><div className="timeline-icon">{item.icon}</div><p>{item.date}</p><h3>{item.title}</h3><span>{item.description}</span><b aria-hidden="true">0{index + 1}</b></article>)}</div></section>
       <section className="one-month section" aria-labelledby="one-month-title-en"><div className="one-month-photo"><Image src="/images/nene-one-month.jpeg" alt="Nene celebrating her first month" fill sizes="(max-width: 800px) 94vw, 52vw" /><span><NeneTotalDays suffix=" days with you ♡" /></span></div><div className="one-month-copy"><p className="eyebrow">Our current little chapter</p><h2 id="one-month-title-en"><NeneAgeHeadline /><br /><em>OF LOVE</em></h2><NeneAgeStats locale="en" /><p className="english-quote">“<NeneTotalDays suffix=" days" /> of tiny smiles, little cries, sleepless nights and endless love.”</p><p>Every little smile, sleepy cuddle, and new discovery adds another beautiful page to our family’s story.</p></div></section>
-      <section className="gallery section" id="gallery"><SectionHeading kicker="Our favourite tiny moments" title="Little Moments 📸" copy="Everyday photographs that have become some of our most precious memories." /><Gallery locale="en" /></section>
+      <section className="gallery section" id="gallery"><SectionHeading kicker="Our favourite tiny moments" title="Little Moments 📸" copy="Everyday photographs that have become some of our most precious memories." /><Gallery locale="en" items={galleryPhotos} /></section>
       <section className="video-memories section section-soft" aria-labelledby="video-title-en"><SectionHeading kicker="Press play, keep forever" title="Moving Memories" copy="Some memories are most beautiful when we can watch them come alive again." /><div className="video-grid">{videos.map((video) => <article key={video.src} id={`video-${video.id}`}><video controls playsInline preload="metadata" poster={video.poster} aria-label={video.subtitle}><source src={video.src} type="video/mp4" /><track kind="captions" src="/captions/nene-th.vtt" srcLang="th" label="Thai captions" /></video><div><span>{video.id === "first-day-home" ? "A brand-new chapter begins" : "One month of love"}</span><h3>{video.subtitle}</h3></div></article>)}</div></section>
       <section className="memories section" id="memories"><SectionHeading kicker="Small stories, big love" title="Sweet Memories" copy="Little stories we hope to read together with Nene in the years ahead." /><div className="memory-grid">{memoriesEn.map((memory, index) => <article className="memory-card" key={memory.title}><span className="memory-number">{String(index + 1).padStart(2, "0")}</span><div className="memory-icon">{memory.icon}</div><h3>{memory.title}</h3><p>{memory.text}</p>{memory.videoId && <a className="memory-video-link" href={`#video-${memory.videoId}`}>Watch this memory <span aria-hidden="true">→</span></a>}</article>)}</div></section>
       <section className="letter section" aria-labelledby="letter-title-en"><div className="letter-photo"><Image src="/images/nene-smile.jpeg" alt="Nene's sweet little smile" fill sizes="(max-width: 760px) 88vw, 38vw" /></div><article className="letter-paper"><span className="letter-mark">♡</span><p className="eyebrow">Forever in our hearts</p><h2 id="letter-title-en">A Letter From<br /><em>Mom & Dad</em></h2><div className="letter-content"><p>Dear Nene,</p><p>From the moment you came into our lives, our whole world changed. Every day carries more meaning now. Your little smile fills us with happiness, and we promise to stand beside you through every chapter of your life.</p><p>We love you more than words can say.<br /><b>Mom & Dad ♡</b></p></div></article></section>
